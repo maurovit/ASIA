@@ -1,30 +1,30 @@
 <ion-tabs>
 
-  <ion-tab tab="home">
-    <ion-router-outlet name="home"></ion-router-outlet>
+  <ion-tab tab="asia">
+    <ion-router-outlet name="asia"></ion-router-outlet>
   </ion-tab>
-  <ion-tab tab="about">
-    <ion-router-outlet name="about"></ion-router-outlet>
+  <ion-tab tab="community">
+    <ion-router-outlet name="community"></ion-router-outlet>
   </ion-tab>
-  <ion-tab tab="contact">
-    <ion-router-outlet name="contact"></ion-router-outlet>
+  <ion-tab tab="profile">
+    <ion-router-outlet name="profile"></ion-router-outlet>
   </ion-tab>
 
-  <ion-tab-bar slot="bottom">
+  <ion-tab-bar id="tabs" slot="bottom" style="border: none">
 
-    <ion-tab-button tab="home" href="/tabs/(home:home)">
-      <ion-icon name="home"></ion-icon>
-      <ion-label>Home</ion-label>
+    <ion-tab-button tab="asia" href="/tabs/(asia:asia)">
+      <ion-icon src="assets/icon/svg/asia-tab.svg"></ion-icon>
+      <ion-label>Asia</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="about" href="/tabs/(about:about)">
-      <ion-icon name="information-circle"></ion-icon>
-      <ion-label>About</ion-label>
+    <ion-tab-button tab="community" href="/tabs/(community:community)">
+      <ion-icon src="assets/icon/svg/community-tab.svg"></ion-icon>
+      <ion-label>Community</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="contact" href="/tabs/(contact:contact)">
-      <ion-icon name="contacts"></ion-icon>
-      <ion-label>Contact</ion-label>
+    <ion-tab-button tab="profile" href="/tabs/(profile:profile)">
+      <ion-icon src="assets/icon/svg/profile-tab.svg"></ion-icon>
+      <ion-label>Profilo</ion-label>
     </ion-tab-button>
 
   </ion-tab-bar>

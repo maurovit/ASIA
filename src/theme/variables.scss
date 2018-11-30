@@ -5,12 +5,12 @@
 :root {
 
   /** primary **/
-  --ion-color-primary: #3880ff;
-  --ion-color-primary-rgb: 56,128,255;
-  --ion-color-primary-contrast: #ffffff;
-  --ion-color-primary-contrast-rgb: 255,255,255;
-  --ion-color-primary-shade: #3171e0;
-  --ion-color-primary-tint: #4c8dff;
+  --ion-color-primary:#1E88E5;
+  --ion-color-primary-rgb: 30,136,229;
+  --ion-color-primary-contrast: #fcfcfc;
+  --ion-color-primary-contrast-rgb: 252,252,252;
+  --ion-color-primary-shade: #00B4DB;
+  --ion-color-primary-tint: #0083B0;
 
   /** secondary **/
   --ion-color-secondary: #0cd1e8;
@@ -76,4 +76,16 @@
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
 
+}
+
+@font-face
+{
+    font-family: 'Comfortaa';
+    src: url('../assets/font/Comfortaa-Regular.ttf');
+}
+
+*
+{
+    font-family: 'Comfortaa';
+    font-size:  12px;
 }

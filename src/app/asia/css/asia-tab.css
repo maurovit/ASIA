@@ -1,0 +1,380 @@
+*
+{
+    scroll-behavior: smooth;
+}
+
+ion-header
+{
+    height: 11%;
+}
+
+ion-footer
+{
+    height: 10%!important;
+}
+
+ion-footer ion-toolbar
+{
+    background: #fcfcfc!important;
+}
+
+ion-toolbar
+{
+    height: 100%!important;
+}
+
+ion-fab ion-fab-button button
+{
+    box-shadow: none;
+}
+
+div#chat
+{
+    height: 100%;
+    overflow-y: auto;
+}
+
+div.bubble-wrap
+{
+    overflow-y: visible;
+}
+
+.message-container
+{
+    display: inline-block!important;
+    width: 100%!important;
+}
+
+.message-container .say
+{
+    background-color: #DCDCDC;
+    color: #424242;
+}
+
+.message-container .reply .bubble-pick
+{
+    background-color: #1E88E5!important;
+    color: #FCFCFC;
+}
+
+.reply-container
+{
+    margin-top: -3px;
+}
+
+div.bubble-wrap .message-container div
+{
+    margin-right: 17px !important;
+}
+
+div.message-container ion-grid,
+div.message-container ion-grid ion-row,
+div.message-container ion-grid ion-row ion-col
+{
+    padding: 0;
+}
+
+.first-asia-message
+{
+    position: absolute;
+    bottom: 0;
+}
+
+.responsive-img 
+{
+    width: 100%;
+    height: auto;
+}
+
+div.first-reply
+{
+    margin-top: 10px;
+}
+
+.reply .bubble-content
+{
+    opacity: 1!important;
+}
+
+.input-and-button-wrapper
+{
+    display: block;
+    margin: auto;
+    border-radius: 30px;
+    
+    background-color: #fcfcfc;
+    border: 1px solid #dcdcdc;
+}
+
+input#chatbox
+{
+    display: block;
+    width: 100%;
+    margin: auto;
+    padding: 10px;
+    border: none;
+    font-size: 15px;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+    
+    background-color: #fcfcfc;
+}
+
+.input-and-button-wrapper ion-grid,
+.input-and-button-wrapper ion-grid ion-row,
+.input-and-button-wrapper ion-grid ion-row ion-col
+{
+    margin: 0;
+    padding: 0;
+}
+
+.voice-button
+{
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+}
+
+.voice-button ion-icon
+{
+    font-size: 30px;
+}
+
+@keyframes quiet {
+  25%{
+    transform: scaleY(.6);
+  }
+  50%{
+    transform: scaleY(.4);
+  }
+  75%{
+    transform: scaleY(.8);
+  }
+}
+
+.stop-voice-button
+{
+    height: 100%;
+    background-color: transparent;
+    color: #fcfcfc;
+    position:absolute;
+    left:0px;
+    top:0px;
+    bottom:0px;
+    width:20%;
+}
+
+.stop-voice-button ion-icon
+{
+    display: block!important;
+    margin: auto;
+    font-size: xx-large;
+}
+
+.send-message-button
+{
+    height: 100%;
+    width: 100%;
+    background-color: transparent;
+    margin: auto
+}
+
+.send-message-button ion-icon
+{
+    font-size: 45px;
+}
+
+input:focus, button:focus{
+    outline: none;
+}
+
+/*
+==============================================
+Removing tabs on keybord show
+==============================================
+*/
+.remove-tabs
+{
+    display: none;
+}
+
+/*
+==============================================
+Voice Recording Animation
+==============================================
+*/
+
+@keyframes normal {
+  25%{
+    transform: scaleY(1);
+  }
+  50%{
+    transform: scaleY(.4);
+  }
+  75%{
+    transform: scaleY(.6);
+  }
+}
+@keyframes loud {
+  25%{
+    transform: scaleY(1);
+  }
+  50%{
+    transform: scaleY(.4);
+  }
+  75%{
+    transform: scaleY(1.2);
+  }
+}
+
+.wavesContainer{
+  display: flex;
+  justify-content: space-between;
+  height: 37px;
+  --boxSize: 3px;
+  --gutter: 10px;
+  width: calc((var(--boxSize) + var(--gutter)) * 5);
+  margin:auto;
+}
+
+.wave{
+  transform: scaleY(.4);
+  height: 90%;
+  width: var(--boxSize);
+  background: #fcfcfc;
+  animation-duration: 1.2s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  border-radius: 8px;
+}
+
+.wave1{
+  animation-name: quiet;
+}
+
+.wave2{
+  animation-name: normal;
+}
+
+.wave3{
+  animation-name: quiet;
+}
+
+.wave4{
+  animation-name: loud;
+}
+
+.wave5{
+  animation-name: quiet;
+}
+
+/*
+==============================================
+Stretch Right Animation
+==============================================
+*/
+
+.stretchRight
+{
+    background-image: radial-gradient( circle 963px at 1.9% 5%,  rgba(0,193,80,1) 0%, rgba(0,112,198,1) 100.2% );
+    border: none;
+	animation-name: stretchRight;
+	-webkit-animation-name: stretchRight;	
+
+	animation-duration: 1.5s;	
+	-webkit-animation-duration: 1.5s;
+
+	animation-timing-function: ease-out;	
+	-webkit-animation-timing-function: ease-out;	
+
+	transform-origin: 0% 0%;
+	-ms-transform-origin: 0% 0%;
+	-webkit-transform-origin: 0% 0%; 		
+}
+
+@keyframes stretchRight 
+{
+	0% 
+    {
+		transform: scaleX(0.83);
+	}
+	40% 
+    {
+		transform: scaleX(1.02);
+	}
+	60% 
+    {
+		transform: scaleX(0.98);
+	}
+	80% 
+    {
+		transform: scaleX(1.01);
+	}
+	100% 
+    {
+		transform: scaleX(0.98);
+	}				
+	80% 
+    {
+		transform: scaleX(1.01);
+	}
+	100% 
+    {
+		transform: scaleX(1);
+	}							
+}
+
+@-webkit-keyframes stretchRight 
+{
+	0% 
+    {
+		-webkit-transform: scaleX(0.83);
+	}
+	40% 
+    {
+		-webkit-transform: scaleX(1.02);
+	}
+	60% 
+    {
+		-webkit-transform: scaleX(0.98);
+	}
+	80% 
+    {
+		-webkit-transform: scaleX(1.01);
+	}
+	100% 
+    {
+		-webkit-transform: scaleX(0.98);
+	}				
+	80% 
+    {
+		-webkit-transform: scaleX(1.01);
+	}
+	100% 
+    {
+		-webkit-transform: scaleX(1);
+	}		
+}
+
+@media screen and (max-height:580px)
+{
+    ion-footer
+    {
+        height: 15%!important;
+    }
+}
+/*
+==============================================
+Colors
+==============================================
+*/
+.ion-color-asia-toolbar
+{
+  --ion-color-base: radial-gradient( circle farthest-corner at 10% 20%,  #00B4DB 0%, #1E88E5 99.1% )!important;
+}
+
+.ion-color-footer
+{
+  --ion-color-base:#fcfcfc;
+}

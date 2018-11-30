@@ -1,0 +1,8 @@
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" x="0px" y="0px" viewBox="0 0 100 100"><g transform="translate(0,-952.36218)"><path style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;opacity:1;fill:url('#Gradient1');fill-opacity:1;stroke:none;stroke-width:1.66666662999999990;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans" d="M 50 7 C 26.263604 7 7 26.2636 7 50 C 7 73.7364 26.263604 93 50 93 C 73.736396 93 93 73.7364 93 50 C 93 26.2636 73.736396 7 50 7 z M 50 9 C 72.65552 9 91 27.34448 91 50 C 91 72.6555 72.65552 91 50 91 C 27.34448 91 9 72.6555 9 50 C 9 27.34448 27.34448 9 50 9 z M 39.9375 26.96875 A 1.0001 1.0001 0 0 0 39.3125 28.71875 L 62.5 50 L 39.3125 71.25 A 1.0059819 1.0059819 0 0 0 40.6875 72.71875 L 64.6875 50.71875 A 1.0001 1.0001 0 0 0 64.6875 49.25 L 40.6875 27.25 A 1.0001 1.0001 0 0 0 39.9375 26.96875 z " transform="translate(0,952.36218)"/></g>
+    <defs>
+      <linearGradient id="Gradient1" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#00B4DB" />
+        <stop offset="50%" stop-color="#1E88E5" />
+      </linearGradient>
+    </defs> 
+</svg>
