@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Bubbles } from "chat-bubble/component/Bubbles.js";
 import { ViewEncapsulation } from '@angular/core';
 
+import { SpeechRecognition} from '@ionic-native/speech-recognition/ngx';
+
 @Component({
   selector: 'app-home',
   templateUrl: 'asia.page.html',
@@ -14,19 +16,54 @@ export class AsiaPage implements OnInit
   private vocalInput:boolean;
   private lastMessageOwner:string;
 
+  private isSpeechRecognizerAvailable:boolean;
+  private speechRecognizerOptions;
+
+  constructor(private speechRecognizer: SpeechRecognition){
+  }
+
   ngOnInit(){
     const chatWindow = new Bubbles(document.getElementById('chat'), "chatWindow");
     this.textMessage="";
     this.vocalInput=false;
     this.lastMessageOwner="asia";
+    this.isSpeechRecognizerAvailable=false;
+    //Check per l'attivazione di SpeechRecognition
+    this.speechRecognizer.isRecognitionAvailable().then((available:boolean)=>{
+      console.log("Speech Recognition Available:"+available);
+      this.speechRecognizer.hasPermission().then((hasPermission:boolean)=>{
+        console.log("Voice Recording Permission Status:"+hasPermission);
+        if(available&&!hasPermission){
+          this.speechRecognizer.requestPermission().then(()=>{
+            console.log("Voice Recording Permission Granted");
+            this.isSpeechRecognizerAvailable=true;
+            this.speechRecognizerOptions={language:'it-IT',showPopup:false};
+          },
+            ()=>console.log("Voice Recording Permission Denied"));
+        } else if(available&&hasPermission){
+          this.isSpeechRecognizerAvailable=true;
+          this.speechRecognizerOptions={language:'it-IT',showPopup:false};
+        }
+      });
+    });
   }
 
   switchToVocal():void{
     this.vocalInput=true;
+    if(this.isSpeechRecognizerAvailable){
+      console.log("Start Speech Detection....");
+      this.speechRecognizer.startListening(this.speechRecognizerOptions).subscribe(
+        (matches: string[]) => console.log(matches),
+        (onerror) => console.log('error:', onerror));
+    }
   }
 
   switchToTextual():void{
     this.vocalInput=false;
+    if(this.isSpeechRecognizerAvailable){
+      this.speechRecognizer.stopListening();
+      console.log("Speech Detection Stopped");
+    }
   }
 
   sendMessage(){
