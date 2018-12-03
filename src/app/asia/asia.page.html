@@ -56,6 +56,7 @@
     <ion-toolbar color="footer">
         <ion-grid>
             <ion-row>
+                <!-- VOCAL INPUT AND TEXTUAL INPUT -->
                 <ion-col size="{{!this.vocalInput?10:12}}">
                     <div [ngClass]="{'input-and-button-wrapper':true,'stretchRight':vocalInput,'stretchLeft':!vocalInput}">
                         <ion-grid *ngIf="!vocalInput">
@@ -70,10 +71,11 @@
                                 </ion-col>
                             </ion-row>
                         </ion-grid>
-                        
+                       <!-- STOP VOCAL INPUT BUTTON -->
                         <button class="stop-voice-button animated bounceIn" *ngIf="vocalInput" (click)="switchToTextual()">
                             <ion-icon name="ios-square-outline" style="font-size: x-large;"></ion-icon>
                         </button>
+                        <!-- VOCAL INPUT ANIMATED WAVES -->
                         <div class="wavesContainer animated bounceIn" *ngIf="vocalInput">
                           <div class="wave wave1"></div>
                           <div class="wave wave2"></div>
@@ -81,18 +83,13 @@
                           <div class="wave wave4"></div>
                           <div class="wave wave5"></div>
                         </div>
-                        
                     </div>
                 </ion-col>
+                <!-- SEND TEXT MESSAGE BUTTON -->
                 <ion-col size="2" *ngIf="!this.vocalInput"  style="padding: 0;">
                     <button class="send-message-button animated bounceIn" (click)="sendMessage()">
                         <img id="send-btn-img" src="assets/icon/svg/send_btn_arrow.svg">
                     </button>
-                    <!--<ion-fab vertical="center">
-                        <ion-fab-button mini>
-                            <ion-icon name="ios-arrow-dropright"></ion-icon>
-                        </ion-fab-button>
-                    </ion-fab>-->
                 </ion-col>
             </ion-row>
         </ion-grid>
