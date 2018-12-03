@@ -11,6 +11,8 @@ import { AppComponent } from './app.component';
 
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { SpeechRecognition } from '@ionic-native/speech-recognition/ngx';
+import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -21,7 +23,8 @@ import { SpeechRecognition } from '@ionic-native/speech-recognition/ngx';
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     Keyboard,
-    SpeechRecognition
+    SpeechRecognition,
+    TextToSpeech
   ],
   bootstrap: [AppComponent]
 })

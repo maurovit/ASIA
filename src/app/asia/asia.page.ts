@@ -3,6 +3,8 @@ import { Bubbles } from "chat-bubble/component/Bubbles.js";
 import { ViewEncapsulation } from '@angular/core';
 
 import { SpeechRecognition} from '@ionic-native/speech-recognition/ngx';
+import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
+
 
 @Component({
   selector: 'app-home',
@@ -23,7 +25,13 @@ export class AsiaPage implements OnInit
   private PARTIAL_SENTENCE_ID="show-partial";
   private PARTIAL_SENTENCE_CONTAINER_ID="show-partial-container";
 
-  constructor(private speechRecognizer: SpeechRecognition, private ngZone:NgZone){
+  constructor(private speechRecognizer: SpeechRecognition, private speaker:TextToSpeech,private ngZone:NgZone){
+  //   To speak
+  //   this.speaker.speak({
+  //     text: 'Ciao, sono Asia! Sono qui per ascoltarti ed aiutarti.',
+  //     locale: 'it-IT',
+  //     rate: 1
+  // });
   }
 
   ngOnInit(){
