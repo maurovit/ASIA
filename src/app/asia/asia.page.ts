@@ -14,6 +14,9 @@ import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 })
 export class AsiaPage implements OnInit 
 {
+
+  private asiaMessage;
+
   private textMessage;
   private vocalInput:boolean;
   private lastMessageOwner:string;
@@ -26,12 +29,14 @@ export class AsiaPage implements OnInit
   private PARTIAL_SENTENCE_CONTAINER_ID="show-partial-container";
 
   constructor(private speechRecognizer: SpeechRecognition, private speaker:TextToSpeech,private ngZone:NgZone){
-  //   To speak
-  //   this.speaker.speak({
-  //     text: 'Ciao, sono Asia! Sono qui per ascoltarti ed aiutarti.',
-  //     locale: 'it-IT',
-  //     rate: 1
-  // });
+    //To speak
+    /*
+    this.speaker.speak({
+    text: 'Ciao, sono Asia! Sono qui per ascoltarti ed aiutarti.',
+    locale: 'it-IT',
+    rate: 1
+   });
+   */
   }
 
   ngOnInit(){
@@ -60,6 +65,11 @@ export class AsiaPage implements OnInit
       });
     });
   }
+
+  ngAfterViewInit(): void{
+    this.asiaSpeak('Ciao, il mio nome è Asia!')
+  }
+  
 
   switchToVocal():void{
     this.vocalInput=true;
@@ -175,5 +185,13 @@ export class AsiaPage implements OnInit
     msgContainer.appendChild(bubble_reply);
 
     return msgContainer;
+  }
+
+  asiaSpeak(message: string):void{
+    this.speaker.speak({
+      text: message,
+      locale: 'it-IT',
+      rate: 1
+     });
   }
 }
