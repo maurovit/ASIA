@@ -33,7 +33,11 @@
     "cordova-plugin-apiai": "1.7.4",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-ionic-keyboard": "^2.1.3",
+<<<<<<< HEAD
     "cordova-plugin-ionic-webview": "^2.3.2",
+=======
+    "cordova-plugin-ionic-webview": "^2.3.1",
+>>>>>>> d0eb6d03595702cc759e48a2598bd05de0269c83
     "cordova-plugin-speechrecognition": "^1.2.0",
     "cordova-plugin-splashscreen": "^5.0.2",
     "cordova-plugin-statusbar": "^2.4.2",
@@ -59,6 +63,7 @@
     "@types/jasmine": "~2.8.6",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~10.12.0",
+    "api-ai-javascript": "^2.0.0-beta.21",
     "codelyzer": "~4.5.0",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
