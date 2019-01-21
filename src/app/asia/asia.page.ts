@@ -5,6 +5,10 @@ import { ViewEncapsulation } from '@angular/core';
 import { SpeechRecognition} from '@ionic-native/speech-recognition/ngx';
 import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 
+import { Platform } from '@ionic/angular'
+import { send } from 'q';
+
+declare var ApiAIPromises: any;
 
 @Component({
   selector: 'app-home',
@@ -14,6 +18,9 @@ import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 })
 export class AsiaPage implements OnInit 
 {
+
+  private asiaMessage;
+
   private textMessage;
   private vocalInput:boolean;
   private lastMessageOwner:string;
@@ -25,13 +32,42 @@ export class AsiaPage implements OnInit
   private PARTIAL_SENTENCE_ID="show-partial";
   private PARTIAL_SENTENCE_CONTAINER_ID="show-partial-container";
 
-  constructor(private speechRecognizer: SpeechRecognition, private speaker:TextToSpeech,private ngZone:NgZone){
-  //   To speak
-  //   this.speaker.speak({
-  //     text: 'Ciao, sono Asia! Sono qui per ascoltarti ed aiutarti.',
-  //     locale: 'it-IT',
-  //     rate: 1
-  // });
+  constructor(public platform: Platform, private speechRecognizer: SpeechRecognition, private speaker:TextToSpeech,private ngZone:NgZone){
+      platform.ready().then(() => {
+        ApiAIPromises.init({
+          clientAccessToken: "683c8c9cbe1a418280e759b457994b91"
+        }).then(result => console.log(result));
+      });
+
+  }
+
+  ask(question) {
+    ApiAIPromises.requestText({
+      query: question
+    })
+    .then(({result: {fulfillment: {speech}}}) => {
+       this.ngZone.run(()=> {
+
+        if(speech!=''){
+          this.lastMessageOwner='asia';
+          var div_chat=document.getElementById("chat");
+          var bubble_wrap= div_chat.firstChild;
+          var messageElement= this.createMessageElement(speech,false);
+    
+          this.ask(this.textMessage);
+    
+          setTimeout(function(){
+            bubble_wrap.appendChild(messageElement);
+            //scroll
+            div_chat.scrollTop = div_chat.scrollHeight;
+          },100);
+          //proprietario dell'ulltimo messaggio
+
+        }
+         this.asiaSpeak(speech);
+         this.asiaMessage = speech;
+       });
+    })
   }
 
   ngOnInit(){
@@ -60,6 +96,11 @@ export class AsiaPage implements OnInit
       });
     });
   }
+
+  ngAfterViewInit(): void{
+    this.asiaSpeak('Ciao, il mio nome è Asia!')
+  }
+  
 
   switchToVocal():void{
     this.vocalInput=true;
@@ -120,6 +161,10 @@ export class AsiaPage implements OnInit
       var div_chat=document.getElementById("chat");
       var bubble_wrap= div_chat.firstChild;
       var messageElement= this.createMessageElement(this.textMessage,false);
+
+      //Domanda ad Asia
+      this.ask(this.textMessage);
+
       setTimeout(function(){
         bubble_wrap.appendChild(messageElement);
         //scroll
@@ -137,6 +182,9 @@ export class AsiaPage implements OnInit
         send_btn.classList.remove("animated");
         send_btn.classList.remove("pulse");
       },1000);
+
+    
+        
   }
 
   createSpeech2TextBubble(){
@@ -175,5 +223,13 @@ export class AsiaPage implements OnInit
     msgContainer.appendChild(bubble_reply);
 
     return msgContainer;
+  }
+
+  asiaSpeak(message: string):void{
+    this.speaker.speak({
+      text: message,
+      locale: 'it-IT',
+      rate: 1
+     });
   }
 }
