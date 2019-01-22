@@ -19,7 +19,7 @@ declare var ApiAIPromises: any;
 export class AsiaPage implements OnInit 
 {
 
-  private asiaMessage;
+  private asiaMessage:string;
 
   private textMessage;
   private vocalInput:boolean;
@@ -32,7 +32,6 @@ export class AsiaPage implements OnInit
   private PARTIAL_SENTENCE_ID="show-partial";
   private PARTIAL_SENTENCE_CONTAINER_ID="show-partial-container";
 
-<<<<<<< HEAD
   constructor(public platform: Platform, private speechRecognizer: SpeechRecognition, private speaker:TextToSpeech,private ngZone:NgZone){
       platform.ready().then(() => {
         ApiAIPromises.init({
@@ -50,10 +49,9 @@ export class AsiaPage implements OnInit
        this.ngZone.run(()=> {
 
         if(speech!=''){
-          this.lastMessageOwner='asia';
           var div_chat=document.getElementById("chat");
           var bubble_wrap= div_chat.firstChild;
-          var messageElement= this.createMessageElement(speech,false);
+          var messageElement= this.createMessageElement(speech,false,'asia');
     
           this.ask(this.textMessage);
     
@@ -63,23 +61,12 @@ export class AsiaPage implements OnInit
             div_chat.scrollTop = div_chat.scrollHeight;
           },100);
           //proprietario dell'ulltimo messaggio
-
+          this.lastMessageOwner='asia';
         }
          this.asiaSpeak(speech);
          this.asiaMessage = speech;
        });
     })
-=======
-  constructor(private speechRecognizer: SpeechRecognition, private speaker:TextToSpeech,private ngZone:NgZone){
-    //To speak
-    /*
-    this.speaker.speak({
-    text: 'Ciao, sono Asia! Sono qui per ascoltarti ed aiutarti.',
-    locale: 'it-IT',
-    rate: 1
-   });
-   */
->>>>>>> d0eb6d03595702cc759e48a2598bd05de0269c83
   }
 
   ngOnInit(){
@@ -135,6 +122,7 @@ export class AsiaPage implements OnInit
               this.switchToTextual();
             })
             console.log("Listening Ended");
+            this.ask(matches[0]);
           }else{
             //Modifica del testo parziale nella speech bubble
             var speechBubble=document.getElementById(this.PARTIAL_SENTENCE_ID);
@@ -172,7 +160,7 @@ export class AsiaPage implements OnInit
     if(this.textMessage!=''){
       var div_chat=document.getElementById("chat");
       var bubble_wrap= div_chat.firstChild;
-      var messageElement= this.createMessageElement(this.textMessage,false);
+      var messageElement= this.createMessageElement(this.textMessage,false,'user');
 
       //Domanda ad Asia
       this.ask(this.textMessage);
@@ -202,7 +190,7 @@ export class AsiaPage implements OnInit
   createSpeech2TextBubble(){
     var div_chat=document.getElementById("chat");
     var bubble_wrap= div_chat.firstChild;
-    var messageElement=this.createMessageElement(this.lastPartialSentence,true);
+    var messageElement=this.createMessageElement(this.lastPartialSentence,true,'user');
     setTimeout(function(){
       bubble_wrap.appendChild(messageElement);
       div_chat.scrollTop = div_chat.scrollHeight;
@@ -211,28 +199,64 @@ export class AsiaPage implements OnInit
     this.textMessage="";
   }
 
-  createMessageElement(text:string,speech2Text:boolean){
+  createMessageElement(text:string,speech2Text:boolean,owner:string){
     var msgContainer=document.createElement("div");
-    //Check del proprieterio dell'ultimo messaggio
-    var firstReplyClass=this.lastMessageOwner==='asia'?"first-reply":"";
-    msgContainer.setAttribute("class","message-container  reply-container "+firstReplyClass+" animated fadeIn");
-    msgContainer.setAttribute("style","margin-right: 17px;")
-    var bubble_reply=document.createElement("div");
-    bubble_reply.setAttribute("class","bubble reply");
-    var bubble_content=document.createElement("span");
-    bubble_content.setAttribute("class","bubble-content");
-    var text_container=document.createElement("span");
-    text_container.setAttribute("class","bubble-button bubble-pick");
-    if(speech2Text){
-      //ids per il controllo della speech bubble
-      msgContainer.setAttribute("id",this.PARTIAL_SENTENCE_CONTAINER_ID);
-      text_container.setAttribute("id",this.PARTIAL_SENTENCE_ID);
-    }
-    text_container.innerText=text;
 
-    bubble_content.appendChild(text_container);
-    bubble_reply.appendChild(bubble_content);
-    msgContainer.appendChild(bubble_reply);
+    if(owner=='user'){
+      //Check del proprieterio dell'ultimo messaggio
+      var firstReplyClass=this.lastMessageOwner==='asia'?"first-reply":"";
+      msgContainer.setAttribute("class","message-container  reply-container "+firstReplyClass+" animated fadeIn");
+      msgContainer.setAttribute("style","margin-right: 17px;")
+      var bubble_reply=document.createElement("div");
+      bubble_reply.setAttribute("class","bubble reply");
+      var bubble_content=document.createElement("span");
+      bubble_content.setAttribute("class","bubble-content");
+      var text_container=document.createElement("span");
+      text_container.setAttribute("class","bubble-button bubble-pick");
+      if(speech2Text){
+        //ids per il controllo della speech bubble
+        msgContainer.setAttribute("id",this.PARTIAL_SENTENCE_CONTAINER_ID);
+        text_container.setAttribute("id",this.PARTIAL_SENTENCE_ID);
+      }
+      text_container.innerText=text;
+
+      bubble_content.appendChild(text_container);
+      bubble_reply.appendChild(bubble_content);
+      msgContainer.appendChild(bubble_reply);
+
+    } else if(owner=='asia'){
+      msgContainer.setAttribute("class","message-container");
+      var ionGrid=document.createElement("ion-grid");
+      var ionRow=document.createElement("ion-row");
+      var avatarCol=document.createElement("ion-col");
+      avatarCol.setAttribute("size","2");
+      var ionAvatar=document.createElement("ion-avatar");
+      ionAvatar.setAttribute("class","responsive-img");
+      var imgAvatar=document.createElement("img");
+      imgAvatar.setAttribute("src","assets/img/asia_avatar.png");
+
+      ionAvatar.appendChild(imgAvatar);
+      if(this.lastMessageOwner==='user')
+        avatarCol.appendChild(ionAvatar);
+      
+      var msgCol=document.createElement("ion-col");
+      msgCol.setAttribute("size","10");
+      msgCol.setAttribute("style","padding-left: 5px");
+      var asiaMsgDiv=document.createElement("div");
+      var firstReplyClass=this.lastMessageOwner==='user'?"first-asia-message":"";
+      asiaMsgDiv.setAttribute("class","bubble say "+firstReplyClass);
+      var asiaMsgSpan=document.createElement("span");
+      asiaMsgSpan.setAttribute("class","bubble-content");
+      asiaMsgSpan.innerText=text;
+
+      asiaMsgDiv.appendChild(asiaMsgSpan);
+      msgCol.appendChild(asiaMsgDiv);
+
+      ionRow.appendChild(avatarCol);
+      ionRow.appendChild(msgCol);
+      ionGrid.appendChild(ionRow);
+      msgContainer.appendChild(ionGrid);
+    }
 
     return msgContainer;
   }
