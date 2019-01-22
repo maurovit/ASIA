@@ -32,7 +32,6 @@ export class AsiaPage implements OnInit
   private PARTIAL_SENTENCE_ID="show-partial";
   private PARTIAL_SENTENCE_CONTAINER_ID="show-partial-container";
 
-<<<<<<< HEAD
   constructor(public platform: Platform, private speechRecognizer: SpeechRecognition, private speaker:TextToSpeech,private ngZone:NgZone){
       platform.ready().then(() => {
         ApiAIPromises.init({
@@ -54,9 +53,6 @@ export class AsiaPage implements OnInit
           var div_chat=document.getElementById("chat");
           var bubble_wrap= div_chat.firstChild;
           var messageElement= this.createMessageElement(speech,false);
-    
-          this.ask(this.textMessage);
-    
           setTimeout(function(){
             bubble_wrap.appendChild(messageElement);
             //scroll
@@ -69,17 +65,6 @@ export class AsiaPage implements OnInit
          this.asiaMessage = speech;
        });
     })
-=======
-  constructor(private speechRecognizer: SpeechRecognition, private speaker:TextToSpeech,private ngZone:NgZone){
-    //To speak
-    /*
-    this.speaker.speak({
-    text: 'Ciao, sono Asia! Sono qui per ascoltarti ed aiutarti.',
-    locale: 'it-IT',
-    rate: 1
-   });
-   */
->>>>>>> d0eb6d03595702cc759e48a2598bd05de0269c83
   }
 
   ngOnInit(){
