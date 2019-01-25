@@ -35,7 +35,7 @@ export class AsiaPage implements OnInit
   constructor(public platform: Platform, private speechRecognizer: SpeechRecognition, private speaker:TextToSpeech,private ngZone:NgZone){
       platform.ready().then(() => {
         ApiAIPromises.init({
-          clientAccessToken: "683c8c9cbe1a418280e759b457994b91"
+          clientAccessToken: "0789d5a8570149b1a121d840a89436ea"
         }).then(result => console.log(result));
       });
 
@@ -51,14 +51,7 @@ export class AsiaPage implements OnInit
         if(speech!=''){
           var div_chat=document.getElementById("chat");
           var bubble_wrap= div_chat.firstChild;
-<<<<<<< HEAD
-          var messageElement= this.createMessageElement(speech,false);
-=======
           var messageElement= this.createMessageElement(speech,false,'asia');
-    
-          this.ask(this.textMessage);
-    
->>>>>>> 0b9d7accbc3fc99303cdffcab301a254bc15c746
           setTimeout(function(){
             bubble_wrap.appendChild(messageElement);
             //scroll
