@@ -41,17 +41,31 @@ export class AsiaPage implements OnInit
 
   }
 
+
+
   ask(question) {
     ApiAIPromises.requestText({
       query: question
     })
     .then(({result: {fulfillment: {speech}}}) => {
        this.ngZone.run(()=> {
+        var textSpeech = '';
+        var audioSpeech = '';
 
         if(speech!=''){
+          //Quando la risposta di Asia divisa in parlato e testo
+          var splitted = speech.split("|"); 
+          if(splitted.length == 2){
+            audioSpeech = splitted[0];
+            textSpeech = splitted[1];
+          }else{
+            audioSpeech = speech;
+            textSpeech = speech;
+          }
+
           var div_chat=document.getElementById("chat");
           var bubble_wrap= div_chat.firstChild;
-          var messageElement= this.createMessageElement(speech,false,'asia');
+          var messageElement= this.createMessageElement(textSpeech,false,'asia');
           setTimeout(function(){
             bubble_wrap.appendChild(messageElement);
             //scroll
@@ -60,8 +74,8 @@ export class AsiaPage implements OnInit
           //proprietario dell'ulltimo messaggio
           this.lastMessageOwner='asia';
         }
-         this.asiaSpeak(speech);
-         this.asiaMessage = speech;
+         this.asiaSpeak(audioSpeech);
+         this.asiaMessage = textSpeech;
        });
     })
   }
