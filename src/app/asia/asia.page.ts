@@ -42,6 +42,60 @@ export class AsiaPage implements OnInit
   }
 
 
+ AsiaSpeaksThroughSecretCommands(message: string):boolean{
+    //Dentro questo metodo devono essere gestiti tutti i secretCommands
+    //Per adesso può andare un secret command per volta
+    var preCommandMessage = ''
+    var commandMessage = ''
+    var postCommandMessage = ''
+    if(message.includes('<slower>') && message.includes('</slower>')){
+      //convenzione: il secretCommand si riferisce alla string che segue il secret command
+       var alteredMessage = message.split('<slower>');
+       preCommandMessage = alteredMessage[0];
+       commandMessage = alteredMessage[1].split('</slower>')[0];
+       postCommandMessage = alteredMessage[1].split('</slower>')[1];
+
+        this.speaker.speak({
+          text: preCommandMessage,
+          locale: 'it-IT',
+          rate: 1
+         }).then(() => this.speaker.speak({
+          text: commandMessage,
+          locale: 'it-IT',
+          rate: 0.83
+         })).then(()=>this.speaker.speak({
+          text: postCommandMessage,
+          locale: 'it-IT',
+          rate: 1
+         }))     
+       return true;
+    }else if(message.includes('<eng>') && message.includes('</eng>')){
+      //convenzione: il secretCommand si riferisce alla string che segue il secret command
+      var alteredMessage = message.split('<eng>');
+      preCommandMessage = alteredMessage[0];
+      commandMessage = alteredMessage[1].split('</eng>')[0];
+      postCommandMessage = alteredMessage[1].split('</eng>')[1];
+
+       this.speaker.speak({
+         text: preCommandMessage,
+         locale: 'it-IT',
+         rate: 1
+        }).then(() => this.speaker.speak({
+         text: commandMessage,
+         locale: 'en-GB',
+         rate: 0.9
+        })).then(()=>this.speaker.speak({
+         text: postCommandMessage,
+         locale: 'it-IT',
+         rate: 1
+        }))     
+      return true;
+    }else
+      return false;
+    //qui andrebbere else if per tutte le altre condizioni
+
+  }
+
 
   ask(question) {
     ApiAIPromises.requestText({
@@ -51,7 +105,8 @@ export class AsiaPage implements OnInit
        this.ngZone.run(()=> {
         var textSpeech = '';
         var audioSpeech = '';
-
+        //valutare se utilizzare questa variabile
+        var isSplitted = false;
         if(speech!=''){
           //Quando la risposta di Asia divisa in parlato e testo
           var splitted = speech.split("|"); 
@@ -62,7 +117,6 @@ export class AsiaPage implements OnInit
             audioSpeech = speech;
             textSpeech = speech;
           }
-
           var div_chat=document.getElementById("chat");
           var bubble_wrap= div_chat.firstChild;
           var messageElement= this.createMessageElement(textSpeech,false,'asia');
@@ -74,8 +128,10 @@ export class AsiaPage implements OnInit
           //proprietario dell'ulltimo messaggio
           this.lastMessageOwner='asia';
         }
-         this.asiaSpeak(audioSpeech);
-         this.asiaMessage = textSpeech;
+
+        if(!this.AsiaSpeaksThroughSecretCommands(audioSpeech))
+          this.asiaSpeaksDefault(audioSpeech);
+        this.asiaMessage = textSpeech;
        });
     })
   }
@@ -108,7 +164,7 @@ export class AsiaPage implements OnInit
   }
 
   ngAfterViewInit(): void{
-    this.asiaSpeak('Ciao, il mio nome è Asia!')
+    this.asiaSpeaksDefault('Ciao, il mio nome è Asia!')
   }
   
 
@@ -272,11 +328,11 @@ export class AsiaPage implements OnInit
     return msgContainer;
   }
 
-  asiaSpeak(message: string):void{
+  asiaSpeaksDefault(message: string):void{
     this.speaker.speak({
       text: message,
       locale: 'it-IT',
-      rate: 1
+      rate: 0.95
      });
   }
 }
