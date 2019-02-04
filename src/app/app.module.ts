@@ -13,13 +13,17 @@ import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { SpeechRecognition } from '@ionic-native/speech-recognition/ngx';
 import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 
-
+import { AngularFireModule } from '@angular/fire';
+import { AngularFirestoreModule, AngularFirestore } from '@angular/fire/firestore';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
   imports: [BrowserModule, IonicModule.forRoot(),
-    AppRoutingModule
+    AppRoutingModule,
+    AngularFirestoreModule,
+    AngularFireModule.initializeApp(environment.firebase)
     ],
   providers: [
     StatusBar,
@@ -27,7 +31,8 @@ import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     Keyboard,
     SpeechRecognition,
-    TextToSpeech
+    TextToSpeech,
+    AngularFirestore
   ],
   bootstrap: [AppComponent]
 })
