@@ -1,12 +1,26 @@
-import { Component, OnInit, NgZone } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
 import { Bubbles } from "chat-bubble/component/Bubbles.js";
 import { ViewEncapsulation } from '@angular/core';
 
 import { SpeechRecognition} from '@ionic-native/speech-recognition/ngx';
 import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 
-import { Platform } from '@ionic/angular'
-import { send } from 'q';
+import { NavController, Platform, AlertController} from '@ionic/angular';
+import { Media, MediaObject } from '@ionic-native/media/ngx';
+import { File} from '@ionic-native/file/ngx';
+import { HTTP } from '@ionic-native/http/ngx';
+
+import { Camera, CameraOptions, PictureSourceType } from '@ionic-native/Camera/ngx';
+import { FileEntry } from '@ionic-native/File/ngx';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
+import { NativeStorage } from '@ionic-native/native-storage/ngx';
+import { FilePath } from '@ionic-native/file-path/ngx';
+
+
+
+import { ActionSheetController, ToastController, LoadingController } from '@ionic/angular';
+import { FileTransfer, FileTransferObject, FileUploadOptions } from'@ionic-native/file-transfer/ngx';
+
 
 declare var ApiAIPromises: any;
 
@@ -18,6 +32,9 @@ declare var ApiAIPromises: any;
 })
 export class AsiaPage implements OnInit 
 {
+  //Le frasi che Asia usa per contattare periodicamente l'utente
+  AsiaEntranceSentences : string[] = ['E un po che non ti sento, che mi racconti?',
+   'Hey ti stavo pensando e cosi ti ho contattato, come va?', 'Ti va di fare due chiacchiere con me?'];
 
   private asiaMessage:string;
 
@@ -31,15 +48,230 @@ export class AsiaPage implements OnInit
 
   private PARTIAL_SENTENCE_ID="show-partial";
   private PARTIAL_SENTENCE_CONTAINER_ID="show-partial-container";
+  
+  //Variabili per la registrazione
+  
+  fileMedia: MediaObject;
+  bool = false;
 
-  constructor(public platform: Platform, private speechRecognizer: SpeechRecognition, private speaker:TextToSpeech,private ngZone:NgZone){
+  images = [];
+ 
+
+  recording: boolean = false;
+  filePath: string;
+  fileName: string;
+  audio: MediaObject;
+  audioList: any[] = [];
+
+  constructor(public platform: Platform, private speechRecognizer: SpeechRecognition,
+     private speaker:TextToSpeech, private ngZone:NgZone,
+     public navCtrl: NavController, private media: Media,
+     private file:File, private http : HTTP, private alertController: AlertController,
+     private camera: Camera, private webview: WebView, private actionSheetController: ActionSheetController,
+     private toastController: ToastController, private plt: Platform, private loadingController: LoadingController,
+     private ref: ChangeDetectorRef, private fP: FilePath, private fT: FileTransfer
+     ){
       platform.ready().then(() => {
         ApiAIPromises.init({
           clientAccessToken: "0789d5a8570149b1a121d840a89436ea"
         }).then(result => console.log(result));
-      });
-
+      });         
   }
+
+  pathForImage(img) {
+    if (img === null) {
+      return '';
+    } else {
+      let converted = this.webview.convertFileSrc(img);
+      return converted;
+    }
+  }
+ 
+  async presentToast(text) {
+    const toast = await this.toastController.create({
+        message: text,
+        position: 'bottom',
+        duration: 3000
+    });
+    toast.present();
+  }
+
+ 
+takePicture() {
+    var options: CameraOptions = {
+        quality: 50,
+        sourceType: this.camera.PictureSourceType.CAMERA,
+        saveToPhotoAlbum: true,
+        correctOrientation: true
+    };
+    this.camera.getPicture(options).then(imagePath => {
+            var currentName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
+            var correctPath = imagePath.substr(0, imagePath.lastIndexOf('/') + 1);
+            this.copyFileToLocalDir(correctPath, currentName, this.createFileName());      
+    })
+}
+
+createFileName() {
+  var d = new Date(),
+      n = d.getTime(),
+      newFileName = n + ".jpg";
+  return newFileName;
+}
+
+copyFileToLocalDir(namePath, currentName, newFileName) {
+  this.file.copyFile(namePath, currentName, this.file.dataDirectory, newFileName).then(success => {
+      let filePath = this.file.dataDirectory + newFileName;
+      let resPath = this.pathForImage(filePath);
+
+      let newEntry = {
+          name: newFileName,
+          path: resPath,
+          filePath: filePath
+      };
+
+      this.uploadImageData(newEntry);
+  }, error => {
+      this.presentToast('Error while storing file.');  
+  });
+}
+
+async uploadImageData(entry) {
+  var imgEntry = entry;
+
+  var keyAPIAsia = '';
+  const uriBase = 'http://192.168.1.79:8080/AsiaUtils/PictureEmotionDetection';
+  
+  const fileTransfer: FileTransferObject = this.fT.create();
+  fileTransfer.upload(imgEntry.filePath, uriBase, {}).then((data) => {
+  var speech = JSON.stringify(data);
+  this.ngZone.run(()=> {
+        var div_chat=document.getElementById("chat");
+        var bubble_wrap= div_chat.firstChild;
+        var messageElement= this.createMessageElement(speech,false,'asia');
+        setTimeout(function(){
+          bubble_wrap.appendChild(messageElement);
+          //scroll
+          div_chat.scrollTop = div_chat.scrollHeight;
+        },100);
+        //proprietario dell'ulltimo messaggio
+        this.lastMessageOwner='asia';
+  })}, (err) => {
+      console.log("Errore");
+      var div_chat=document.getElementById("chat");
+    })  
+}
+
+getAudioList() {
+  if(localStorage.getItem("audiolist")) {
+    this.audioList = JSON.parse(localStorage.getItem("audiolist"));
+    console.log(this.audioList);
+    }
+}
+
+startRecord() {
+    if (this.platform.is('ios')) {
+      this.fileName = 'record'+new Date().getDate()+new Date().getMonth()+new Date().getFullYear()+new Date().getHours()+new Date().getMinutes()+new Date().getSeconds()+'.wav';
+      this.filePath = this.file.tempDirectory.replace(/file-\/\//g, '') + this.fileName;
+      this.audio = this.media.create(this.filePath);
+    } else if (this.platform.is('android')) {
+      this.fileName = 'record'+new Date().getDate()+new Date().getMonth()+new Date().getFullYear()+new Date().getHours()+new Date().getMinutes()+new Date().getSeconds()+'.wav';
+      this.filePath = this.file.externalDataDirectory.replace(/file-\/\//g, '') + this.fileName;
+      this.audio = this.media.create(this.filePath);
+    }
+    this.audio.startRecord();
+    this.recording = true;
+}
+
+  stopRecord() {
+    this.audio.stopRecord();
+    let data = { filename: this.fileName };
+    this.audioList.push(data);
+    localStorage.setItem("audiolist", JSON.stringify(this.audioList));
+    this.recording = false;
+  }
+
+  playAudio(file,idx) {
+    if (this.platform.is('ios')) {
+      this.filePath = this.file.documentsDirectory.replace(/file-\/\//g, '') + file;
+      this.audio = this.media.create(this.filePath);
+    } else if (this.platform.is('android')) {
+      this.filePath = this.file.externalDataDirectory.replace(/file-\/\//g, '') + file;
+      this.audio = this.media.create(this.filePath);
+    }
+    this.audio.play();
+    this.audio.setVolume(0.8);
+  }
+
+  metodo(){
+    if(this.bool==false){
+      this.startRecord();
+      this.bool = true;
+    }else if(this.bool == true){
+      this.stopRecord();
+      this.playAudio(this.fileName, 0);
+      this.bool= false;
+      this.checkEmotion();
+    }
+  }
+  
+  checkEmotion(){
+    var base64Audio;
+    
+    this.file.readAsDataURL(this.file.externalDataDirectory.replace(/file-\/\//g, ''), this.fileName).then((value: string) => {
+      base64Audio =value;},(err) => {
+        this.asiaSpeaksDefault("errore lettura file");
+      });
+    var url =" https://proxy.api.deepaffects.com/audio/generic/api/v2/sync/recognise_emotion";
+    
+    var data = {
+      content: base64Audio,
+      sampleRate: 8000,
+      encoding: 'WAV',
+      languageCode: 'en-US'
+    };
+  
+    const params = {
+      'api-key' :'x1qv6N2JzTiXqlx4jcZoah6lEuUHgy4k'
+    };
+
+    const options = {
+        params,
+        data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+    this.http.post(url,data,{}).then(data => {
+      var speech = JSON.stringify(data);
+      this.ngZone.run(()=> {
+          var div_chat=document.getElementById("chat");
+          var bubble_wrap= div_chat.firstChild;
+          var messageElement= this.createMessageElement(speech,false,'asia');
+          setTimeout(function(){
+            bubble_wrap.appendChild(messageElement);
+            //scroll
+            div_chat.scrollTop = div_chat.scrollHeight;
+          },100);
+          //proprietario dell'ulltimo messaggio
+          this.lastMessageOwner='asia';
+        })
+      })
+    .catch(error => {
+      var speech = JSON.stringify(error);
+      this.ngZone.run(()=> {
+        var div_chat=document.getElementById("chat");
+        var bubble_wrap= div_chat.firstChild;
+        var messageElement= this.createMessageElement(speech,false,'asia');
+        setTimeout(function(){
+          bubble_wrap.appendChild(messageElement);
+          //scroll
+          div_chat.scrollTop = div_chat.scrollHeight;
+        },100);
+        //proprietario dell'ulltimo messaggio
+        this.lastMessageOwner='asia';
+      })
+    })
+    } 
 
 
  AsiaSpeaksThroughSecretCommands(message: string):boolean{
@@ -164,9 +396,8 @@ export class AsiaPage implements OnInit
   }
 
   ngAfterViewInit(): void{
-    this.asiaSpeaksDefault('Ciao, il mio nome è Asia!')
+    this.asiaSpeaksDefault('Ciao, il mio nome è Asia!');  
   }
-  
 
   switchToVocal():void{
     this.vocalInput=true;
@@ -268,7 +499,6 @@ export class AsiaPage implements OnInit
 
   createMessageElement(text:string,speech2Text:boolean,owner:string){
     var msgContainer=document.createElement("div");
-
     if(owner=='user'){
       //Check del proprieterio dell'ultimo messaggio
       var firstReplyClass=this.lastMessageOwner==='asia'?"first-reply":"";
