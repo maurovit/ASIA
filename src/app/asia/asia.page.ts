@@ -36,6 +36,8 @@ export class AsiaPage implements OnInit
   AsiaEntranceSentences : string[] = ['E un po che non ti sento, che mi racconti?',
    'Hey ti stavo pensando e cosi ti ho contattato, come va?', 'Ti va di fare due chiacchiere con me?'];
 
+  private warningLevel: number;
+
   private asiaMessage:string;
 
   private textMessage;
@@ -75,7 +77,9 @@ export class AsiaPage implements OnInit
         ApiAIPromises.init({
           clientAccessToken: "0789d5a8570149b1a121d840a89436ea"
         }).then(result => console.log(result));
-      });         
+      });     
+      
+      this.warningLevel = 0;
   }
 
   pathForImage(img) {
@@ -317,6 +321,48 @@ startRecord() {
          locale: 'en-GB',
          rate: 0.9
         })).then(()=>this.speaker.speak({
+         text: postCommandMessage,
+         locale: 'it-IT',
+         rate: 1
+        }))     
+      return true;
+    }else if(message.includes('<warning>') && message.includes('</warning>')){
+      //convenzione: il secretCommand si riferisce alla string che segue il secret command
+      var alteredMessage = message.split('<warning>');
+      preCommandMessage = alteredMessage[0];
+      commandMessage = alteredMessage[1].split('</warning>')[0];
+      postCommandMessage = alteredMessage[1].split('</warning>')[1];
+
+       this.speaker.speak({
+         text: preCommandMessage,
+         locale: 'it-IT',
+         rate: 1
+        }).then(() => {
+         this.warningLevel ++;
+         //Quando il warning level raggiunge il 3 contatta l'operatore e azzera il warning level
+         if(this.warningLevel == 3){
+           //Do something
+         }
+        }).then(()=>this.speaker.speak({
+         text: postCommandMessage,
+         locale: 'it-IT',
+         rate: 1
+        }))     
+      return true;
+    }else if(message.includes('<critical>') && message.includes('</critical>')){
+      //convenzione: il secretCommand si riferisce alla string che segue il secret command
+      var alteredMessage = message.split('<critical>');
+      preCommandMessage = alteredMessage[0];
+      commandMessage = alteredMessage[1].split('</critical>')[0];
+      postCommandMessage = alteredMessage[1].split('</critical>')[1];
+
+       this.speaker.speak({
+         text: preCommandMessage,
+         locale: 'it-IT',
+         rate: 1
+        }).then(() => {
+          //AZZERA WRNING LEVEL E CONTATTA OPERATORE
+        }).then(()=>this.speaker.speak({
          text: postCommandMessage,
          locale: 'it-IT',
          rate: 1
