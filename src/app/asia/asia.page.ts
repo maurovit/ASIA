@@ -11,12 +11,8 @@ import { File} from '@ionic-native/file/ngx';
 import { HTTP } from '@ionic-native/http/ngx';
 
 import { Camera, CameraOptions, PictureSourceType } from '@ionic-native/Camera/ngx';
-import { FileEntry } from '@ionic-native/File/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
-import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { FilePath } from '@ionic-native/file-path/ngx';
-
-
 
 import { ActionSheetController, ToastController, LoadingController } from '@ionic/angular';
 import { FileTransfer, FileTransferObject, FileUploadOptions } from'@ionic-native/file-transfer/ngx';
@@ -77,8 +73,7 @@ export class AsiaPage implements OnInit
         ApiAIPromises.init({
           clientAccessToken: "0789d5a8570149b1a121d840a89436ea"
         }).then(result => console.log(result));
-      });     
-      
+      });      
       this.warningLevel = 0;
   }
 
@@ -143,7 +138,7 @@ async uploadImageData(entry) {
   var imgEntry = entry;
 
   var keyAPIAsia = '';
-  const uriBase = 'http://192.168.1.79:8080/AsiaUtils/PictureEmotionDetection';
+  const uriBase = 'http://ec2-3-87-190-68.compute-1.amazonaws.com:8080/AsiaUtils/PictureEmotionDetection';
   
   const fileTransfer: FileTransferObject = this.fT.create();
   fileTransfer.upload(imgEntry.filePath, uriBase, {}).then((data) => {
@@ -492,6 +487,36 @@ startRecord() {
     }
   }
 
+  async TextSentimentAnalysis(messaggio){
+      var msg = messaggio;
+      var APIAsiaKey = '';
+      var url = "http://ec2-3-87-190-68.compute-1.amazonaws.com:8080/AsiaUtils/TextSentimentAnalysis";
+
+      this.http.post(url, {
+        "body" : msg
+      }, {
+        'Content-Type': 'application/json'
+      }).then(data => {
+        //Controllo per decide se incrementare il warningLevel
+        var speech = JSON.stringify(data);
+  this.ngZone.run(()=> {
+        var div_chat=document.getElementById("chat");
+        var bubble_wrap= div_chat.firstChild;
+        var messageElement= this.createMessageElement(speech,false,'asia');
+        setTimeout(function(){
+          bubble_wrap.appendChild(messageElement);
+          //scroll
+          div_chat.scrollTop = div_chat.scrollHeight;
+        },100);
+        //proprietario dell'ulltimo messaggio
+        this.lastMessageOwner='asia';
+  })
+        })
+      .catch(error => {
+          console.log(JSON.stringify(error));
+      })
+  }
+
   sendMessage(){
     var send_btn=document.getElementById("send-btn-img");
     //Aggiunta dell'animazione al bottone
@@ -506,6 +531,8 @@ startRecord() {
       var bubble_wrap= div_chat.firstChild;
       var messageElement= this.createMessageElement(this.textMessage,false,'user');
 
+      //metodoAsincronoPerIlSentimentAnalysis
+      this.TextSentimentAnalysis(this.textMessage);
       //Domanda ad Asia
       this.ask(this.textMessage);
 
@@ -526,9 +553,6 @@ startRecord() {
         send_btn.classList.remove("animated");
         send_btn.classList.remove("pulse");
       },1000);
-
-    
-        
   }
 
   createSpeech2TextBubble(){
