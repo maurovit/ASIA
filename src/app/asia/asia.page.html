@@ -1,13 +1,13 @@
 <!-- TOOLBAR -->
 <ion-header no-border>
   <ion-toolbar color="asia-toolbar">
-      
     <ion-grid>
-
         <ion-row>
-            <button  (click)="takePicture()">
-                <ion-icon name="camera" slot="start" ></ion-icon>
-            </button>
+            <ion-col>
+                <ion-thumbnail>
+                    <ion-img src="assets/img/camera.png" style="width:85%; height: 85%" (click)="takePicture()"> </ion-img>
+                </ion-thumbnail>
+            </ion-col>
         </ion-row>
     </ion-grid>
     <ion-title></ion-title>  
@@ -29,8 +29,7 @@
                         </ion-col>
                         <ion-col size="10" style="padding-left: 5px">
                             <div class="bubble say first-asia-message">
-                                <span class="bubble-content" >Ciao, ti stavo pensando e ho deciso di contattarti,
-                                    come stai?
+                                <span class="bubble-content" >Ciao, il mio nome è Asia 😄
                                 </span>
                             </div>
                         </ion-col>

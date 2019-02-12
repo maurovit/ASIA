@@ -136,9 +136,9 @@ copyFileToLocalDir(namePath, currentName, newFileName) {
 
 async uploadImageData(entry) {
   var imgEntry = entry;
-
+  
   var keyAPIAsia = '';
-  const uriBase = 'http://ec2-3-87-190-68.compute-1.amazonaws.com:8080/AsiaUtils/PictureEmotionDetection';
+  const uriBase = 'http://192.168.1.12:8080/AsiaUtils/PictureEmotionDetection';
   
   const fileTransfer: FileTransferObject = this.fT.create();
   fileTransfer.upload(imgEntry.filePath, uriBase, {}).then((data) => {
@@ -215,63 +215,16 @@ startRecord() {
   
   checkEmotion(){
     var base64Audio;
-    
-    this.file.readAsDataURL(this.file.externalDataDirectory.replace(/file-\/\//g, ''), this.fileName).then((value: string) => {
-      base64Audio =value;},(err) => {
-        this.asiaSpeaksDefault("errore lettura file");
-      });
-    var url =" https://proxy.api.deepaffects.com/audio/generic/api/v2/sync/recognise_emotion";
-    
-    var data = {
-      content: base64Audio,
-      sampleRate: 8000,
-      encoding: 'WAV',
-      languageCode: 'en-US'
-    };
-  
-    const params = {
-      'api-key' :'x1qv6N2JzTiXqlx4jcZoah6lEuUHgy4k'
-    };
-
-    const options = {
-        params,
-        data,
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    };
-    this.http.post(url,data,{}).then(data => {
-      var speech = JSON.stringify(data);
-      this.ngZone.run(()=> {
-          var div_chat=document.getElementById("chat");
-          var bubble_wrap= div_chat.firstChild;
-          var messageElement= this.createMessageElement(speech,false,'asia');
-          setTimeout(function(){
-            bubble_wrap.appendChild(messageElement);
-            //scroll
-            div_chat.scrollTop = div_chat.scrollHeight;
-          },100);
-          //proprietario dell'ulltimo messaggio
-          this.lastMessageOwner='asia';
-        })
-      })
-    .catch(error => {
-      var speech = JSON.stringify(error);
-      this.ngZone.run(()=> {
-        var div_chat=document.getElementById("chat");
-        var bubble_wrap= div_chat.firstChild;
-        var messageElement= this.createMessageElement(speech,false,'asia');
-        setTimeout(function(){
-          bubble_wrap.appendChild(messageElement);
-          //scroll
-          div_chat.scrollTop = div_chat.scrollHeight;
-        },100);
-        //proprietario dell'ulltimo messaggio
-        this.lastMessageOwner='asia';
-      })
-    })
-    } 
-
+    const uriBase = 'http://192.168.1.12:8888/Audio';
+    const fileTransferAudio: FileTransferObject = this.fT.create();
+    this.presentToast(this.filePath);
+    fileTransferAudio.upload(this.filePath, uriBase, {}).then((data) => {
+        this.presentToast(JSON.stringify(data));
+    }, (err) => {
+      console.log("Errore");
+        this.presentToast(JSON.stringify(err));
+    })  
+  } 
 
  AsiaSpeaksThroughSecretCommands(message: string):boolean{
     //Dentro questo metodo devono essere gestiti tutti i secretCommands
@@ -490,7 +443,7 @@ startRecord() {
   async TextSentimentAnalysis(messaggio){
       var msg = messaggio;
       var APIAsiaKey = '';
-      var url = "http://ec2-3-87-190-68.compute-1.amazonaws.com:8080/AsiaUtils/TextSentimentAnalysis";
+      var url = "http://192.168.1.12:8080/AsiaUtils/TextSentimentAnalysis";
 
       this.http.post(url, {
         "body" : msg
@@ -554,6 +507,8 @@ startRecord() {
         send_btn.classList.remove("pulse");
       },1000);
   }
+
+
 
   createSpeech2TextBubble(){
     var div_chat=document.getElementById("chat");
