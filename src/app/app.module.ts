@@ -28,6 +28,8 @@ import { IonicStorageModule } from '@ionic/storage';
 import { FileTransfer } from'@ionic-native/file-transfer/ngx';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
 
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -46,7 +48,8 @@ import { FileChooser } from '@ionic-native/file-chooser/ngx';
     FilePath,
     NativeStorage,
     FileTransfer,
-    FileChooser
+    FileChooser,
+    LocalNotifications
   ],
   bootstrap: [AppComponent]
 })

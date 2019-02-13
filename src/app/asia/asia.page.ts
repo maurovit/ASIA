@@ -15,6 +15,7 @@ import { FilePath } from '@ionic-native/file-path/ngx';
 
 import { ActionSheetController, ToastController, LoadingController } from '@ionic/angular';
 import { FileTransfer, FileTransferObject, FileUploadOptions } from'@ionic-native/file-transfer/ngx';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
 declare var ApiAIPromises: any;
 
@@ -52,7 +53,8 @@ export class AsiaPage implements OnInit
      public navCtrl: NavController,private file:File, private http : HTTP, private alertController: AlertController,
      private camera: Camera, private webview: WebView, private actionSheetController: ActionSheetController,
      private toastController: ToastController, private plt: Platform, private loadingController: LoadingController,
-     private ref: ChangeDetectorRef, private fP: FilePath, private fT: FileTransfer
+     private ref: ChangeDetectorRef, private fP: FilePath, private fT: FileTransfer,
+     private localNotifications: LocalNotifications
      ){
       platform.ready().then(() => {
         ApiAIPromises.init({
@@ -60,6 +62,15 @@ export class AsiaPage implements OnInit
         }).then(result => console.log(result));
       });      
       this.warningLevel = 0;
+      let random_number = Math.random() * 2;
+      var index = Math.floor(random_number);
+      this.localNotifications.schedule({
+        text: this.AsiaEntranceSentences[index],
+        trigger: { every: {  minute: 15 }},
+        led: 'FF0000',
+        sound: this.platform.is('android')? 'file://sound.mp3': 'file://beep.caf',
+        icon : 'assets/img/asia_avatar.png' //url
+     });
   }
 
   pathForImage(img) {
