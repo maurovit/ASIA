@@ -6,7 +6,6 @@ import { SpeechRecognition} from '@ionic-native/speech-recognition/ngx';
 import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 
 import { NavController, Platform, AlertController} from '@ionic/angular';
-import { Media, MediaObject } from '@ionic-native/media/ngx';
 import { File} from '@ionic-native/file/ngx';
 import { HTTP } from '@ionic-native/http/ngx';
 
@@ -16,7 +15,6 @@ import { FilePath } from '@ionic-native/file-path/ngx';
 
 import { ActionSheetController, ToastController, LoadingController } from '@ionic/angular';
 import { FileTransfer, FileTransferObject, FileUploadOptions } from'@ionic-native/file-transfer/ngx';
-
 
 declare var ApiAIPromises: any;
 
@@ -47,24 +45,11 @@ export class AsiaPage implements OnInit
   private PARTIAL_SENTENCE_ID="show-partial";
   private PARTIAL_SENTENCE_CONTAINER_ID="show-partial-container";
   
-  //Variabili per la registrazione
-  
-  fileMedia: MediaObject;
-  bool = false;
 
-  images = [];
- 
-
-  recording: boolean = false;
-  filePath: string;
-  fileName: string;
-  audio: MediaObject;
-  audioList: any[] = [];
 
   constructor(public platform: Platform, private speechRecognizer: SpeechRecognition,
      private speaker:TextToSpeech, private ngZone:NgZone,
-     public navCtrl: NavController, private media: Media,
-     private file:File, private http : HTTP, private alertController: AlertController,
+     public navCtrl: NavController,private file:File, private http : HTTP, private alertController: AlertController,
      private camera: Camera, private webview: WebView, private actionSheetController: ActionSheetController,
      private toastController: ToastController, private plt: Platform, private loadingController: LoadingController,
      private ref: ChangeDetectorRef, private fP: FilePath, private fT: FileTransfer
@@ -138,7 +123,7 @@ async uploadImageData(entry) {
   var imgEntry = entry;
   
   var keyAPIAsia = '';
-  const uriBase = 'http://192.168.1.12:8080/AsiaUtils/PictureEmotionDetection';
+  const uriBase = 'http://192.168.1.79:8080/AsiaUtils/PictureEmotionDetection';
   
   const fileTransfer: FileTransferObject = this.fT.create();
   fileTransfer.upload(imgEntry.filePath, uriBase, {}).then((data) => {
@@ -156,75 +141,11 @@ async uploadImageData(entry) {
         this.lastMessageOwner='asia';
   })}, (err) => {
       console.log("Errore");
-      var div_chat=document.getElementById("chat");
+      this.presentToast("errore");
     })  
 }
 
-getAudioList() {
-  if(localStorage.getItem("audiolist")) {
-    this.audioList = JSON.parse(localStorage.getItem("audiolist"));
-    console.log(this.audioList);
-    }
-}
 
-startRecord() {
-    if (this.platform.is('ios')) {
-      this.fileName = 'record'+new Date().getDate()+new Date().getMonth()+new Date().getFullYear()+new Date().getHours()+new Date().getMinutes()+new Date().getSeconds()+'.wav';
-      this.filePath = this.file.tempDirectory.replace(/file-\/\//g, '') + this.fileName;
-      this.audio = this.media.create(this.filePath);
-    } else if (this.platform.is('android')) {
-      this.fileName = 'record'+new Date().getDate()+new Date().getMonth()+new Date().getFullYear()+new Date().getHours()+new Date().getMinutes()+new Date().getSeconds()+'.wav';
-      this.filePath = this.file.externalDataDirectory.replace(/file-\/\//g, '') + this.fileName;
-      this.audio = this.media.create(this.filePath);
-    }
-    this.audio.startRecord();
-    this.recording = true;
-}
-
-  stopRecord() {
-    this.audio.stopRecord();
-    let data = { filename: this.fileName };
-    this.audioList.push(data);
-    localStorage.setItem("audiolist", JSON.stringify(this.audioList));
-    this.recording = false;
-  }
-
-  playAudio(file,idx) {
-    if (this.platform.is('ios')) {
-      this.filePath = this.file.documentsDirectory.replace(/file-\/\//g, '') + file;
-      this.audio = this.media.create(this.filePath);
-    } else if (this.platform.is('android')) {
-      this.filePath = this.file.externalDataDirectory.replace(/file-\/\//g, '') + file;
-      this.audio = this.media.create(this.filePath);
-    }
-    this.audio.play();
-    this.audio.setVolume(0.8);
-  }
-
-  metodo(){
-    if(this.bool==false){
-      this.startRecord();
-      this.bool = true;
-    }else if(this.bool == true){
-      this.stopRecord();
-      this.playAudio(this.fileName, 0);
-      this.bool= false;
-      this.checkEmotion();
-    }
-  }
-  
-  checkEmotion(){
-    var base64Audio;
-    const uriBase = 'http://192.168.1.12:8888/Audio';
-    const fileTransferAudio: FileTransferObject = this.fT.create();
-    this.presentToast(this.filePath);
-    fileTransferAudio.upload(this.filePath, uriBase, {}).then((data) => {
-        this.presentToast(JSON.stringify(data));
-    }, (err) => {
-      console.log("Errore");
-        this.presentToast(JSON.stringify(err));
-    })  
-  } 
 
  AsiaSpeaksThroughSecretCommands(message: string):boolean{
     //Dentro questo metodo devono essere gestiti tutti i secretCommands
@@ -485,7 +406,7 @@ startRecord() {
       var messageElement= this.createMessageElement(this.textMessage,false,'user');
 
       //metodoAsincronoPerIlSentimentAnalysis
-      this.TextSentimentAnalysis(this.textMessage);
+      //this.TextSentimentAnalysis(this.textMessage);
       //Domanda ad Asia
       this.ask(this.textMessage);
 
@@ -507,8 +428,6 @@ startRecord() {
         send_btn.classList.remove("pulse");
       },1000);
   }
-
-
 
   createSpeech2TextBubble(){
     var div_chat=document.getElementById("chat");

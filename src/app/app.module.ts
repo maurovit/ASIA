@@ -14,7 +14,6 @@ import { SpeechRecognition } from '@ionic-native/speech-recognition/ngx';
 import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 
 import { HTTP } from '@ionic-native/http/ngx';
-import {Media} from '@ionic-native/media/ngx';
 import {File} from '@ionic-native/file/ngx';
 
 import { HttpClientModule } from '@angular/common/http';
@@ -27,6 +26,7 @@ import { NativeStorage} from '@ionic-native/native-storage/ngx';
 import { IonicStorageModule } from '@ionic/storage';
 
 import { FileTransfer } from'@ionic-native/file-transfer/ngx';
+import { FileChooser } from '@ionic-native/file-chooser/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -40,13 +40,13 @@ import { FileTransfer } from'@ionic-native/file-transfer/ngx';
     SpeechRecognition,
     TextToSpeech,
     HTTP,
-    Media,
     File,
     Camera,
     WebView,
     FilePath,
     NativeStorage,
-    FileTransfer
+    FileTransfer,
+    FileChooser
   ],
   bootstrap: [AppComponent]
 })
