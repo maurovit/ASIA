@@ -66,7 +66,7 @@ export class AsiaPage implements OnInit
       var index = Math.floor(random_number);
       this.localNotifications.schedule({
         text: this.AsiaEntranceSentences[index],
-        trigger: { every: {  minute: 15 }},
+        trigger: {at: new Date(new Date().getTime() + 7000)},
         led: 'FF0000',
         sound: this.platform.is('android')? 'file://sound.mp3': 'file://beep.caf',
         icon : 'assets/img/asia_avatar.png' //url
