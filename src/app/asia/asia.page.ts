@@ -27,6 +27,8 @@ declare var ApiAIPromises: any;
 })
 export class AsiaPage implements OnInit 
 {
+
+  public asiaFirstString: string = 'Ciao, il mio nome è Asia 😄';
   //Le frasi che Asia usa per contattare periodicamente l'utente
   AsiaEntranceSentences : string[] = ['E un po che non ti sento, che mi racconti?',
    'Hey ti stavo pensando e cosi ti ho contattato, come va?', 'Ti va di fare due chiacchiere con me?'];
@@ -64,6 +66,7 @@ export class AsiaPage implements OnInit
       this.warningLevel = 0;
       let random_number = Math.random() * 2;
       var index = Math.floor(random_number);
+
       this.localNotifications.schedule({
         text: this.AsiaEntranceSentences[index],
         trigger: {at: new Date(new Date().getTime() + 7000)},
@@ -71,6 +74,12 @@ export class AsiaPage implements OnInit
         sound: this.platform.is('android')? 'file://sound.mp3': 'file://beep.caf',
         icon : 'assets/img/asia_avatar.png' //url
      });
+
+     this.localNotifications.on('click').subscribe(()=>{
+       //Non funziona il porco binding
+       this.asiaFirstString = this.AsiaEntranceSentences[index];
+       this.presentToast(this.asiaFirstString);
+     })
   }
 
   pathForImage(img) {
