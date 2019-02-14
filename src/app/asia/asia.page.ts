@@ -62,8 +62,10 @@ export class AsiaPage implements OnInit
         ApiAIPromises.init({
           clientAccessToken: "0789d5a8570149b1a121d840a89436ea"
         }).then(result => console.log(result));
-      });      
+      });   
+      //Si inizializza il warning level   
       this.warningLevel = 0;
+      //Si calcola l'indice della frase di Asia
       let random_number = Math.random() * 2;
       var index = Math.floor(random_number);
 
@@ -80,6 +82,7 @@ export class AsiaPage implements OnInit
        this.asiaFirstString = this.AsiaEntranceSentences[index];
        this.presentToast(this.asiaFirstString);
      })
+
   }
 
   pathForImage(img) {
