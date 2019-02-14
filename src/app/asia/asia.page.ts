@@ -28,7 +28,6 @@ declare var ApiAIPromises: any;
 export class AsiaPage implements OnInit 
 {
 
-  private firstTime : boolean = true;
   public asiaFirstString: string = 'Ciao, il mio nome è Asia 😄';
   //Le frasi che Asia usa per contattare periodicamente l'utente
   AsiaEntranceSentences : string[] = ['E un po che non ti sento, che mi racconti?',
@@ -332,10 +331,7 @@ async uploadImageData(entry) {
   }
 
   ngAfterViewInit(): void{
-    if(this.firstTime){
       this.asiaSpeaksDefault('Ciao, il mio nome è Asia!');  
-      this.firstTime = false;
-    }
   }
 
 
