@@ -77,4 +77,7 @@ export class RegisterPage implements OnInit {
     this.navCtrl.navigateRoot('/login');
   }
 
+  	registerOnServer(){
+		  
+	  }
 }

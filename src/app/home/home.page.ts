@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import {NativeStorage} from '@ionic-native/native-storage/ngx';
+import {ToastController} from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -11,13 +12,19 @@ import {NativeStorage} from '@ionic-native/native-storage/ngx';
 export class HomePage implements OnInit {
 
   constructor(public navCtrl: NavController, private router: Router,
-    private storage: NativeStorage) { 
-      /*
-      if(storage.getItem("idUtente")!=null)
-        this.router.navigate(['/tabs'])*/
+    private storage: NativeStorage, private toastController: ToastController) { 
+      
   }
 
   ngOnInit() {
+    //Controlla se l'utente ha gà effettuato il login
+    //se si ridirige alla pagina iniziale
+    this.storage.getItem('idUtente')
+          .then(data => {
+            this.router.navigate(['/tabs']) 
+        }, error => {
+            
+    });
   }
 
   signIn() {
@@ -26,5 +33,15 @@ export class HomePage implements OnInit {
 
   goToRegister() {
     this.navCtrl.navigateRoot('/register');
+  }
+
+  
+  async presentToast(text) {
+    const toast = await this.toastController.create({
+        message: text,
+        position: 'bottom',
+        duration: 3000
+    });
+    toast.present();
   }
 }
