@@ -446,7 +446,7 @@ async uploadImageData(entry) {
         //Controllo per decide se incrementare il warningLevel
         var value = data.data;
         
-        if(value < 4){
+        if(value < 0.4){
           this.warningLevel++;
         }
         if(this.warningLevel == 8){
