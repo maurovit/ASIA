@@ -146,15 +146,47 @@ async uploadImageData(entry) {
   var imgEntry = entry;
   
   var keyAPIAsia = '';
-  const uriBase = 'http://192.168.1.79:8080/AsiaUtils/PictureEmotionDetection';
+  const uriBase = 'http://192.168.1.12:8080/AsiaUtils/PictureEmotionDetection';
   
   const fileTransfer: FileTransferObject = this.fT.create();
   fileTransfer.upload(imgEntry.filePath, uriBase, {}).then((data) => {
-  var speech = JSON.stringify(data);
+  var speech = '';
+  if(data.response == "Angry")
+    speech = 'Cosè quella faccia? qualcuno ti ha fatto arrabbiare? | Cosa è quella faccia? Qualcuno ti ha fatto arrabbiare? 😟';
+  else if(data.response == "Contempt" )
+    speech = 'Che bello! Sei contento | Che bello, sei contento 😄';
+  else if(data.response == "Disgust")
+    speech = 'Sembri disgustato, spero non sia per qualcosa che ho fatto | Sembri disgustato, spero non sia per qualcosa che ho fatto 😅';
+  else if(data.response == "Fear" )
+    speech = 'Sembri impaurito, non mi fare preoccupare. Contatto qualcuno? | Sembri impaurito, non mi fare preoccupare. Contatto qualcuno?';
+  else if(data.response == "Happiness" )
+    speech = 'Ah, finalmente vedo una persona felice | Ah, finalmente vedo una persona felice 😄';
+  else if(data.response == "Neutral" )
+    speech = 'Troppo neutrale. Fammi un bel sorriso | Troppo neutrale, fammi un bel sorriso! 😄';
+  else if(data.response == "Sadness" )
+    speech = "Cosa c'è che non va? Sembri triste. Tutto bene? ";
+  else if(data.response == "Surprise" )
+    speech = "Cosè, la mia intelligenza ti sorprende? | Cos'è? La mia intelligenza ti sorprende?😏";
+  else  
+    speech = "Non riesco ad accedere alla zona cognitiva del mio cervello! Hai attivato la connessione ad internet?"
   this.ngZone.run(()=> {
+      var textSpeech = '';
+      var audioSpeech = '';
+      //valutare se utilizzare questa variabile
+      var isSplitted = false;
+      if(speech!=''){
+        //Quando la risposta di Asia divisa in parlato e testo
+        var splitted = speech.split("|"); 
+        if(splitted.length == 2){
+          audioSpeech = splitted[0];
+          textSpeech = splitted[1];
+        }else{
+          audioSpeech = speech;
+          textSpeech = speech;
+        }
         var div_chat=document.getElementById("chat");
         var bubble_wrap= div_chat.firstChild;
-        var messageElement= this.createMessageElement(speech,false,'asia');
+        var messageElement= this.createMessageElement(textSpeech,false,'asia');
         setTimeout(function(){
           bubble_wrap.appendChild(messageElement);
           //scroll
@@ -162,9 +194,47 @@ async uploadImageData(entry) {
         },100);
         //proprietario dell'ulltimo messaggio
         this.lastMessageOwner='asia';
-  })}, (err) => {
-      console.log("Errore");
-      this.presentToast("errore");
+      }
+
+      if(!this.AsiaSpeaksThroughSecretCommands(audioSpeech))
+        this.asiaSpeaksDefault(audioSpeech);
+      this.asiaMessage = textSpeech;
+     });
+    
+ }, (err) => {
+  var speech = "Non riesco ad accedere alla zona cognitiva del mio cervello! Hai attivato la connessione ad internet?"
+  this.ngZone.run(()=> {
+    var textSpeech = '';
+    var audioSpeech = '';
+    //valutare se utilizzare questa variabile
+    var isSplitted = false;
+    if(speech!=''){
+      //Quando la risposta di Asia divisa in parlato e testo
+      var splitted = speech.split("|"); 
+      if(splitted.length == 2){
+        audioSpeech = splitted[0];
+        textSpeech = splitted[1];
+      }else{
+        audioSpeech = speech;
+        textSpeech = speech;
+      }
+      var div_chat=document.getElementById("chat");
+      var bubble_wrap= div_chat.firstChild;
+      var messageElement= this.createMessageElement(textSpeech,false,'asia');
+      setTimeout(function(){
+        bubble_wrap.appendChild(messageElement);
+        //scroll
+        div_chat.scrollTop = div_chat.scrollHeight;
+      },100);
+      //proprietario dell'ulltimo messaggio
+      this.lastMessageOwner='asia';
+    }
+
+    if(!this.AsiaSpeaksThroughSecretCommands(audioSpeech))
+      this.asiaSpeaksDefault(audioSpeech);
+    this.asiaMessage = textSpeech;
+   });
+
     })  
 }
 
@@ -218,29 +288,6 @@ async uploadImageData(entry) {
          rate: 1
         }))     
       return true;
-    }else if(message.includes('<warning>') && message.includes('</warning>')){
-      //convenzione: il secretCommand si riferisce alla string che segue il secret command
-      var alteredMessage = message.split('<warning>');
-      preCommandMessage = alteredMessage[0];
-      commandMessage = alteredMessage[1].split('</warning>')[0];
-      postCommandMessage = alteredMessage[1].split('</warning>')[1];
-
-       this.speaker.speak({
-         text: preCommandMessage,
-         locale: 'it-IT',
-         rate: 1
-        }).then(() => {
-         this.warningLevel ++;
-         //Quando il warning level raggiunge il 3 contatta l'operatore e azzera il warning level
-         if(this.warningLevel == 3){
-           //Do something
-         }
-        }).then(()=>this.speaker.speak({
-         text: postCommandMessage,
-         locale: 'it-IT',
-         rate: 1
-        }))     
-      return true;
     }else if(message.includes('<critical>') && message.includes('</critical>')){
       //convenzione: il secretCommand si riferisce alla string che segue il secret command
       var alteredMessage = message.split('<critical>');
@@ -253,6 +300,7 @@ async uploadImageData(entry) {
          locale: 'it-IT',
          rate: 1
         }).then(() => {
+          this.warningLevel = 0;
           //AZZERA WRNING LEVEL E CONTATTA OPERATORE
         }).then(()=>this.speaker.speak({
          text: postCommandMessage,
@@ -396,19 +444,14 @@ async uploadImageData(entry) {
         'Content-Type': 'application/json'
       }).then(data => {
         //Controllo per decide se incrementare il warningLevel
-        var speech = JSON.stringify(data);
-  this.ngZone.run(()=> {
-        var div_chat=document.getElementById("chat");
-        var bubble_wrap= div_chat.firstChild;
-        var messageElement= this.createMessageElement(speech,false,'asia');
-        setTimeout(function(){
-          bubble_wrap.appendChild(messageElement);
-          //scroll
-          div_chat.scrollTop = div_chat.scrollHeight;
-        },100);
-        //proprietario dell'ulltimo messaggio
-        this.lastMessageOwner='asia';
-  })
+        var value = data.data;
+        
+        if(value < 4){
+          this.warningLevel++;
+        }
+        if(this.warningLevel == 8){
+          //Contatta operatore
+        }
         })
       .catch(error => {
           console.log(JSON.stringify(error));
@@ -430,7 +473,7 @@ async uploadImageData(entry) {
       var messageElement= this.createMessageElement(this.textMessage,false,'user');
 
       //metodoAsincronoPerIlSentimentAnalysis
-      //this.TextSentimentAnalysis(this.textMessage);
+      this.TextSentimentAnalysis(this.textMessage);
       //Domanda ad Asia
       this.ask(this.textMessage);
 
