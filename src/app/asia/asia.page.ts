@@ -17,6 +17,7 @@ import { ActionSheetController, ToastController, LoadingController } from '@ioni
 import { FileTransfer, FileTransferObject, FileUploadOptions } from'@ionic-native/file-transfer/ngx';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
+import { Router } from '@angular/router';
 declare var ApiAIPromises: any;
 
 @Component({
@@ -56,7 +57,7 @@ export class AsiaPage implements OnInit
      private camera: Camera, private webview: WebView, private actionSheetController: ActionSheetController,
      private toastController: ToastController, private plt: Platform, private loadingController: LoadingController,
      private ref: ChangeDetectorRef, private fP: FilePath, private fT: FileTransfer,
-     private localNotifications: LocalNotifications
+     public localNotifications: LocalNotifications, private router:Router
      ){
       platform.ready().then(() => {
         ApiAIPromises.init({

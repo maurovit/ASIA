@@ -26,9 +26,18 @@ export class LoginPage implements OnInit {
     public toastCtrl: ToastController,
 		public router: Router,
 		private storage: NativeStorage
-	) { }
+	) { 
+		//Controlla se l'utente ha gà effettuato il login
+    //se si ridirige alla pagina iniziale
+    this.storage.getItem('idUtente')
+          .then(data => {
+            this.router.navigate(['/tabs',{ replaceUrl: true }]);
+        }, error => {         
+    });
+	}
 
   ngOnInit() {
+		
   }
 
   async login() {
@@ -101,6 +110,7 @@ export class LoginPage implements OnInit {
 
 	returnHome() {
 		this.navCtrl.navigateRoot('/home');
-	  }
+		}
+	
 
 }

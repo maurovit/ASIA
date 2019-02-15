@@ -46,7 +46,7 @@ import { HttpModule } from '@angular/http'
      IonicStorageModule.forRoot(),
      AngularFireModule.initializeApp(firebaseConfig),
      AngularFireAuthModule,
-     HttpModule,
+     HttpModule
     ],
   providers: [
     StatusBar,

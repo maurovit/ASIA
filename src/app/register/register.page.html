@@ -13,12 +13,12 @@
         <div class="logo"><ion-img src="assets/img/logo-finale.png"> </ion-img></div>
         <h3 no-margin>
           <ion-text color="light" class="fw700">
-            <ion-text color="secondary">Registrazione</ion-text>
+            <ion-text color="secondary">REGISTRAZIONE</ion-text>
           </ion-text>
         </h3>
       </div>
 
-    <ion-list>
+    <ion-list style = "border-radius: 6px;" >
 
       <ion-item>
         <ion-label position="floating">Email</ion-label>
@@ -33,6 +33,16 @@
       <ion-item>
           <ion-label position="floating">Conferma Password</ion-label>
           <ion-input type="password" [(ngModel)]="cpassword"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Nominativo</ion-label>
+        <ion-input type="text" [(ngModel)]="nominativo"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Descrizione</ion-label>
+        <ion-input type="text" [(ngModel)]="descrizione"></ion-input>
       </ion-item>
       
       </ion-list>

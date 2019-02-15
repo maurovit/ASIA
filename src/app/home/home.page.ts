@@ -13,18 +13,18 @@ export class HomePage implements OnInit {
 
   constructor(public navCtrl: NavController, private router: Router,
     private storage: NativeStorage, private toastController: ToastController) { 
-      
+      //Controlla se l'utente ha gà effettuato il login
+    //se si ridirige alla pagina iniziale
+    this.storage.getItem('idUtente')
+    .then(data => {
+      //bloccare lahistory con replace url
+      this.router.navigate(['/tabs'],{ replaceUrl: true }) 
+    }, error => {
+    });
   }
 
   ngOnInit() {
-    //Controlla se l'utente ha gà effettuato il login
-    //se si ridirige alla pagina iniziale
-    this.storage.getItem('idUtente')
-          .then(data => {
-            this.router.navigate(['/tabs']) 
-        }, error => {
-            
-    });
+    
   }
 
   signIn() {
