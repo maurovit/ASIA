@@ -30,11 +30,24 @@ import { FileChooser } from '@ionic-native/file-chooser/ngx';
 
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
+import firebaseConfig from './firebase'
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireAuthModule } from '@angular/fire/auth'
+import { UserService } from './user.service';
+import { AuthService } from './auth.service';
+//import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { HttpModule } from '@angular/http'
+
 
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule, IonicStorageModule.forRoot()],
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule,
+     IonicStorageModule.forRoot(),
+     AngularFireModule.initializeApp(firebaseConfig),
+     AngularFireAuthModule,
+     HttpModule,
+    ],
   providers: [
     StatusBar,
     SplashScreen,
@@ -50,7 +63,9 @@ import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
     NativeStorage,
     FileTransfer,
     FileChooser,
-    LocalNotifications
+    LocalNotifications,
+    UserService,
+    AuthService
   ],
   bootstrap: [AppComponent]
 })

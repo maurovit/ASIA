@@ -1,0 +1,34 @@
+<!--<ion-header no-border>
+  <ion-toolbar color="asia-toolbar">
+    <ion-title></ion-title>
+  </ion-toolbar>
+</ion-header>-->
+
+<ion-content padding class="animated fadeIn login auth-page">
+  <div class="theme-bg"></div>
+  <div class="auth-content">
+
+    <!-- Logo -->
+    <div padding-horizontal text-center class="animated fadeInDown">
+        <div class="logo">
+          <ion-img src="assets/img/logo-finale.png"> </ion-img>
+        </div>
+    </div>
+      
+    <div>
+      <ion-button fill="solid" expand="block" color="secondary" (click)="signIn()">Accedi</ion-button>
+      <!--<ion-button fill="solid" expand="block" color="primary" (click)="register()">Crea un account</ion-button>-->
+    </div>
+  
+
+    <!-- Other links -->
+    <div text-center margin-top>
+        <span (click)="goToRegister()" class="paz" tappable>
+          <ion-text color="light">
+            Nuovo qui? <strong>Registrati</strong>
+          </ion-text>
+        </span>
+    </div>
+
+  </div>
+</ion-content>
