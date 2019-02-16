@@ -32,6 +32,11 @@ export class AsiaPage implements OnInit
   private PARTIAL_SENTENCE_ID="show-partial";
   private PARTIAL_SENTENCE_CONTAINER_ID="show-partial-container";
 
+  
+  CHARS_SINGLE_LINE=37;
+  FONT_SIZE=12;
+  LINE_HEIGHT=20;
+
   constructor(public platform: Platform, private speechRecognizer: SpeechRecognition, private speaker:TextToSpeech,private ngZone:NgZone){
       platform.ready().then(() => {
         ApiAIPromises.init({
@@ -267,6 +272,7 @@ export class AsiaPage implements OnInit
   }
 
   createMessageElement(text:string,speech2Text:boolean,owner:string){
+    var initRow=document.createElement("ion-row");
     var msgContainer=document.createElement("div");
 
     if(owner=='user'){
@@ -307,8 +313,9 @@ export class AsiaPage implements OnInit
         avatarCol.appendChild(ionAvatar);
       
       var msgCol=document.createElement("ion-col");
+      var height=this.getChatBubbleHeight(text);
       msgCol.setAttribute("size","10");
-      msgCol.setAttribute("style","padding-left: 5px");
+      msgCol.setAttribute("style","padding-left: 5px;height:"+(height+20)+"px;");
       var asiaMsgDiv=document.createElement("div");
       var firstReplyClass=this.lastMessageOwner==='user'?"first-asia-message":"";
       asiaMsgDiv.setAttribute("class","bubble say "+firstReplyClass);
@@ -324,8 +331,8 @@ export class AsiaPage implements OnInit
       ionGrid.appendChild(ionRow);
       msgContainer.appendChild(ionGrid);
     }
-
-    return msgContainer;
+    ionRow.appendChild(msgContainer);
+    return ionRow;
   }
 
   asiaSpeaksDefault(message: string):void{
@@ -334,5 +341,13 @@ export class AsiaPage implements OnInit
       locale: 'it-IT',
       rate: 0.95
      });
+  }
+
+  getChatBubbleHeight(text:string){
+    console.log("LENGTH "+text.length)
+    var rows=Math.ceil(text.length/this.CHARS_SINGLE_LINE);
+    console.log("ROWS "+rows)
+    var dim=(rows*this.FONT_SIZE)+(rows*(this.LINE_HEIGHT/2));
+    return dim;
   }
 }

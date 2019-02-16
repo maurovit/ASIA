@@ -1,5 +1,12 @@
 import { Component } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { File } from '@ionic-native/file/ngx';
+import { Router } from '@angular/router';
+
+interface Contact{
+  id:string;
+  hasNewMessage:boolean;
+}
 
 @Component({
   selector: 'app-community',
@@ -7,62 +14,99 @@ import { AngularFirestore } from '@angular/fire/firestore';
   styleUrls: ['community.page.scss']
 })
 export class CommunityPage{
-
-  senderName:string;
-  senderSurname:string;
   
   inMessage:Array<any>;
-  allMessages:Map<string,any>;
-  
-  outMessage = { 
-    owner:'', 
-    date:null, 
-    text:'' 
-  };
+  contactsMap:Map<string,any>;
+  contacts:Contact[];
 
-  CHATS_COLLECTION:string='/chats';
-  SENDER_ID:string;
-  RECEIVER_ID:string;
+  USER_ID:string;
+  MESSAGES_ID:string='messages';
+  CONTACTS_FILE:string='contacts.json';
 
-  
-  constructor(private db:AngularFirestore){
-    this.senderName='Mauro';
-    this.senderSurname='Vitale';
-    this.SENDER_ID='mavit'
-    this.RECEIVER_ID='operatore'
-    this.allMessages=new Map<string,any>();
-    this.listenMessage();
-    this.sendMessage('Hello world')
+  constructor(private db:AngularFirestore,private file:File,private router:Router){
+    
+    file.checkFile(file.dataDirectory,this.CONTACTS_FILE)
+        .then(exists=>{
+          console.log("File already exist:",exists);
+        })
+        .catch(error=>{
+          console.log('File '+this.CONTACTS_FILE+' created');
+          return this.file.createFile(this.file.dataDirectory,this.CONTACTS_FILE,false)
+                                     .then(entry=>{console.log(entry)})
+                                     .catch(error=>{console.log(error)});
+        });
+    this.USER_ID='mavit'
+    this.contactsMap=new Map<string,any>();
+    this.contacts=[];
+    this.readContactsFile();
+    this.listenChats();
   }
 
-  sendMessage(text){
-    this.outMessage.owner=this.senderName+' '+this.senderSurname;
-    this.outMessage.date=new Date();
-    this.outMessage.text=text;
-    this.db.collection(this.CHATS_COLLECTION)
-                      .doc(this.SENDER_ID)
-                      .collection(this.RECEIVER_ID)
-                      .add(this.outMessage);
-  }
-
-  listenMessage(){
-    this.db.collection(this.CHATS_COLLECTION)
-                      .doc(this.SENDER_ID)
-                      .collection(this.RECEIVER_ID)
+  listenChats(){
+    this.db.collection(this.USER_ID)
                       .snapshotChanges(['added'])
                       .subscribe(snapshot=>{
                         this.inMessage=snapshot;
                         for(let msg of this.inMessage){
                           var segments_index=msg.payload.doc._key.path.segments.length-1;
-                          var document_key=msg.payload.doc._key.path.segments[segments_index];
-                          if(!this.allMessages.has(document_key)){
-                            this.allMessages.set(document_key,msg.payload.doc.data());
-                            //this.allMessages.forEach((value:any,key:string)=>{
-                            //  console.log("Key",key);
-                            //  console.log("Value",value);
-                            //})
+                          var operator_id=msg.payload.doc._key.path.segments[segments_index];
+                          if(!this.contactsMap.has(operator_id)){
+                            this.contactsMap.set(operator_id,msg.payload.doc.data());
+                            this.contacts.push({id:operator_id,hasNewMessage:true});
+                            this.writeContactsToFile();
                           }
                         }
                       })
+  }
+
+  listenMessages(){
+    console.log(JSON.stringify)
+    for(let contact of this.contacts){
+      this.db.collection(this.USER_ID)
+                        .doc(contact.id)
+                        .collection(this.MESSAGES_ID)
+                        .snapshotChanges(['added'])
+                        .subscribe(snapshot=>{
+                          console.log(snapshot)
+                        });
+    }
+  }
+
+  readContactsFile(){
+    this.file.readAsText(this.file.dataDirectory,this.CONTACTS_FILE)
+                        .then(content=>{
+                          console.log(content);
+                          let savedContacts=JSON.parse(content);
+                          this.contacts=savedContacts;
+                          for(let sc of savedContacts){
+                            this.contactsMap.set(sc.id,null);
+                          }
+                        })
+                        .catch(error=>{
+                          console.log(error);
+                          return null;
+                        })
+  }
+
+  writeContactsToFile(){
+    this.file.writeFile(this.file.dataDirectory,this.CONTACTS_FILE,JSON.stringify(this.contacts),{append:false,replace:true})
+                        .then(result=>{
+                          console.log(result);
+                        })
+                        .catch(error=>{
+                          console.log(error);
+                          return null;
+                        })
+  }
+
+  openChat(id){
+    for(let c of this.contacts){
+      if(c.id===id){
+        c.hasNewMessage=false;
+        break;
+      }
+    }
+    this.writeContactsToFile();
+    this.router.navigate(['/chat/'+id]);
   }
 }
