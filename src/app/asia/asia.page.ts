@@ -19,6 +19,8 @@ import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { Router } from '@angular/router';
 import { v } from '@angular/core/src/render3';
 import { Base64 } from '@ionic-native/base64/ngx';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { NativeStorage } from '@ionic-native/native-storage/ngx';
 
 
 declare var ApiAIPromises: any;
@@ -53,14 +55,23 @@ export class AsiaPage implements OnInit
 
   private asiaSpeaks=false;
 
+  USER_MAIL:string;
+  NOTIFICATIONS_ID='/notifications';
+
   constructor(public platform: Platform, private speechRecognizer: SpeechRecognition,
      private speaker:TextToSpeech, private ngZone:NgZone,
      public navCtrl: NavController,private file:File, private http : HTTP, private alertController: AlertController,
      private camera: Camera, private webview: WebView, private actionSheetController: ActionSheetController,
      private toastController: ToastController, private plt: Platform, private loadingController: LoadingController,
      private ref: ChangeDetectorRef, private fP: FilePath, private fT: FileTransfer,
-     public localNotifications: LocalNotifications, private router:Router, private b64:Base64
+     public localNotifications: LocalNotifications, private router:Router, private b64:Base64, 
+     private storage:NativeStorage,private db:AngularFirestore
      ){
+
+      storage.getItem('email').then(data=>{
+        this.USER_MAIL=data;
+      })
+
       platform.ready().then(() => {
         ApiAIPromises.init({
           clientAccessToken: "0789d5a8570149b1a121d840a89436ea"
@@ -169,7 +180,7 @@ async uploadImageData(entry) {
   var imgEntry = entry;
   
   var keyAPIAsia = '';
-  const uriBase = 'http://192.168.1.12:8080/AsiaUtils/PictureEmotionDetection';
+  const uriBase = 'http://ec2-3-87-190-68.compute-1.amazonaws.com:8080/AsiaUtils/PictureEmotionDetection';
   
   const fileTransfer: FileTransferObject = this.fT.create();
   fileTransfer.upload(imgEntry.filePath, uriBase, {}).then((data) => {
@@ -332,6 +343,9 @@ async uploadImageData(entry) {
           }).then(() => {
             this.warningLevel = 0;
             //AZZERA WRNING LEVEL E CONTATTA OPERATORE
+            this.db.collection(this.NOTIFICATIONS_ID)
+                              .doc(this.USER_MAIL)
+                              .set({});
           }).then(()=>this.speaker.speak({
           text: postCommandMessage,
           locale: 'it-IT',
@@ -469,7 +483,7 @@ async uploadImageData(entry) {
   async TextSentimentAnalysis(messaggio){
       var msg = messaggio;
       var APIAsiaKey = '';
-      var url = "http://192.168.1.12:8080/AsiaUtils/TextSentimentAnalysis";
+      var url = "http://ec2-3-87-190-68.compute-1.amazonaws.com:8080/AsiaUtils/TextSentimentAnalysis";
 
       this.http.post(url, {
         "body" : msg
@@ -484,7 +498,9 @@ async uploadImageData(entry) {
           this.presentToast("Debug: warning level aumentato");
         }
         if(this.warningLevel == 8){
-          //Contatta operatore
+          this.db.collection(this.NOTIFICATIONS_ID)
+                              .doc(this.USER_MAIL)
+                              .set({});
         }
         })
       .catch(error => {

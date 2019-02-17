@@ -26,9 +26,9 @@ export class CommunityPage{
 
   USER_ID:string;
   MESSAGES_ID:string='messages';
-  CONTACTS_FILE:string='chat-contacts.json';
+  CONTACTS_FILE:string='chat-contacts-2.json';
 
-  SERVER_URL='http://192.168.1.12:8080/AsiaUtils/';
+  SERVER_URL='http://ec2-3-87-190-68.compute-1.amazonaws.com:8080/AsiaUtils/inizializzaOperatore';
 
   constructor(private db:AngularFirestore,private file:File,private router:Router,private storage:NativeStorage,private http:HTTP){
     //Recupero id utente
@@ -65,18 +65,20 @@ export class CommunityPage{
                           var operator_id=msg.payload.doc._key.path.segments[segments_index];
                           if(!this.contactsMap.has(operator_id)){
                             this.contactsMap.set(operator_id,msg.payload.doc.data());
-                            this.contacts.push({id:operator_id,name:'',description:'',photo_url:'',hasNewMessage:true});
-                            this.writeContactsToFile();
-
+                            //this.contacts.push({id:operator_id,name:'',description:'',photo_url:'',hasNewMessage:true});
+                            //this.writeContactsToFile();
+                            
                             this.http.post(this.SERVER_URL,{'email':operator_id},{}).then(data=>{
                               var firstSplit=data.data.split("|");
                               var name=firstSplit[0];
                               var description=firstSplit[1];
                               var url=this.SERVER_URL+'images/'+firstSplit[2];
+                              console.log("name",name);
+                              console.log("description",description);
+                              console.log("url",url);
 
-                              //this.contacts.push({id:operator_id,name:name,description:description,photo_url:url,hasNewMessage:true});
-                              //this.writeContactsToFile();
-
+                              this.contacts.push({id:operator_id,name:name,description:description,photo_url:url,hasNewMessage:true});
+                              this.writeContactsToFile();
                             })
                           }
                         }
@@ -101,9 +103,18 @@ export class CommunityPage{
                         .then(content=>{
                           if(content!=''){
                             let savedContacts=JSON.parse(content);
-                            this.contacts=savedContacts;
+                            //this.contacts=savedContacts;
                             for(let sc of savedContacts){
                               this.contactsMap.set(sc.id,null);
+                              this.http.post(this.SERVER_URL,{'email':sc.id},{}).then(data=>{
+                                var firstSplit=data.data.split("|");
+                                var name=firstSplit[0];
+                                var description=firstSplit[1];
+                                var url=this.SERVER_URL+'images/'+firstSplit[2];
+  
+                                this.contacts.push({id:sc.id,name:name,description:description,photo_url:url,hasNewMessage:true});
+                                this.writeContactsToFile();
+                              })
                             }
                           }
                         })
