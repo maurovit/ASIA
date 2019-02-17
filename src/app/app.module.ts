@@ -37,6 +37,7 @@ import { UserService } from './user.service';
 import { AuthService } from './auth.service';
 //import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { HttpModule } from '@angular/http'
+import { AsiaPage } from './asia/asia.page';
 
 
 @NgModule({

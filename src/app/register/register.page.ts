@@ -64,7 +64,7 @@ export class RegisterPage implements OnInit {
   }
   
   async register() {
-		/*
+		
 		const { email, password, cpassword } = this
 		if(password !== cpassword) {
 			return console.error("Le password non corrispondono")
@@ -80,42 +80,17 @@ export class RegisterPage implements OnInit {
 
 			if(res){
 				this.presentAlert('Successo', 'Sei registrato!')
-				this.router.navigate(['/login'])
-				this.registerOnServer();
+				this.router.navigate(['/login']);
 			}
 		} catch(error) {
 			console.dir(error)
 		}
-		*/
-		this.registerOnServer();
+
 	}
 
 	goToLogin() {
     this.navCtrl.navigateRoot('/login');
   }
-
-  
-
-async registerOnServer(){
-	var urlRegistrazione = "http://192.168.1.79:8080/AsiaUtils/RegistrazioneUtente";
-	
-	var params = {
-		email: this.email,
-		nominativo: this.nominativo,
-		descrizione: this.descrizione
-	};
-
-	/*post .upload(this.pathFoto, urlRegistrazione, params).then((data) => {
-	});*/
-	this.http.post(urlRegistrazione, params, {'Content-Type': 'application/json'
-      }).then(data => {
-		  this.presentToast("miao");
-	  })
-      .catch(error => {
-		this.presentToast("none");
-        console.log(JSON.stringify(error));
-      })
-}
 
 async presentToast(text) {
     const toast = await this.toastController.create({

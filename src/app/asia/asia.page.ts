@@ -18,6 +18,8 @@ import { FileTransfer, FileTransferObject, FileUploadOptions } from'@ionic-nativ
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
 import { Router } from '@angular/router';
+
+
 declare var ApiAIPromises: any;
 
 @Component({
@@ -49,7 +51,9 @@ export class AsiaPage implements OnInit
   private PARTIAL_SENTENCE_ID="show-partial";
   private PARTIAL_SENTENCE_CONTAINER_ID="show-partial-container";
   
+  private  localNotifications;
 
+  
 
   constructor(public platform: Platform, private speechRecognizer: SpeechRecognition,
      private speaker:TextToSpeech, private ngZone:NgZone,
@@ -57,7 +61,7 @@ export class AsiaPage implements OnInit
      private camera: Camera, private webview: WebView, private actionSheetController: ActionSheetController,
      private toastController: ToastController, private plt: Platform, private loadingController: LoadingController,
      private ref: ChangeDetectorRef, private fP: FilePath, private fT: FileTransfer,
-     private localNotifications: LocalNotifications, private router:Router
+     localNotifications: LocalNotifications, private router:Router
      ){
       platform.ready().then(() => {
         ApiAIPromises.init({
@@ -72,7 +76,7 @@ export class AsiaPage implements OnInit
         let random_number = Math.random() * 2;
         var index = Math.floor(random_number);
         this.asiaFirstString = this.AsiaEntranceSentences[index];
-          this.localNotifications.schedule({
+          localNotifications.schedule({
             title: 'Asia dice',
             text: this.AsiaEntranceSentences[index],
             trigger: {at: new Date(new Date().getTime() + 10000)},
@@ -81,12 +85,13 @@ export class AsiaPage implements OnInit
             sound: this.platform.is('android')? 'file://sound.mp3': 'file://beep.caf',
             icon : 'C:\\Users\\hp\\Desktop\\Logo finale\\logo-finale.png' //url
        });
+        
+      
       });
 
       this.platform.resume.subscribe(()=>{
-        this.localNotifications.cancel(this.localNotifications.getIds);
+        localNotifications.cancel(localNotifications.getIds());
       });
-
   }
 
   pathForImage(img) {
@@ -150,7 +155,7 @@ async uploadImageData(entry) {
   var imgEntry = entry;
   
   var keyAPIAsia = '';
-  const uriBase = 'http://192.168.1.12:8080/AsiaUtils/PictureEmotionDetection';
+  const uriBase = 'http://192.168.1.79:8080/AsiaUtils/PictureEmotionDetection';
   
   const fileTransfer: FileTransferObject = this.fT.create();
   fileTransfer.upload(imgEntry.filePath, uriBase, {}).then((data) => {
@@ -164,7 +169,7 @@ async uploadImageData(entry) {
   else if(data.response == "Fear" )
     speech = 'Sembri impaurito, non mi fare preoccupare. Contatto qualcuno? | Sembri impaurito, non mi fare preoccupare. Contatto qualcuno?';
   else if(data.response == "Happiness" )
-    speech = 'Ah, finalmente vedo una persona felice | Ah, finalmente vedo una persona felice 😄';
+    speech = '<slower>a</slower>. finalmente vedo una persona felice | Ah, finalmente vedo una persona felice 😄';
   else if(data.response == "Neutral" )
     speech = 'Troppo neutrale. Fammi un bel sorriso | Troppo neutrale, fammi un bel sorriso! 😄';
   else if(data.response == "Sadness" )
