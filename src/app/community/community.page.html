@@ -1,6 +1,41 @@
 <ion-header no-border>
-  <ion-toolbar>
+  <ion-toolbar color="community-toolbar">
   </ion-toolbar>
 </ion-header>
 
-<ion-content></ion-content>
+<ion-content color="community-background">
+        <div id="list-container">
+            <span id="community-label">FriendsBoard</span>
+            <ion-list>
+                <ion-item *ngFor="let contact of contacts">
+                    <ion-label>
+                        <ion-grid>
+                            <ion-row>
+                                <!--AVATAR COL -->
+                                <ion-col size="3">
+                                    <ion-avatar class="responsive-img">
+                                        <img src="assets/img/asia_avatar.png">
+                                        <ion-badge class="unread" *ngIf='contact.hasNewMessage'>.</ion-badge>
+                                    </ion-avatar>
+                                </ion-col>
+                                <!--CONTACT COL-->
+                                <ion-col size="9">
+                                    <!-- NAME DIV-->
+                                    <div id="name-div" class="contact-div">
+                                        <span>{{contact.id}}</span>
+                                    </div>
+                                    <!-- DESCRIPTION DIV-->
+                                    <div id="description-div" class="contact-div">
+                                        <span>{{contact.id}}</span>
+                                    </div>
+                                </ion-col>
+                            </ion-row>
+                        </ion-grid>
+                    </ion-label>
+                    <ion-button fill="clear" (click)="openChat(contact.id)">
+                        <ion-icon src="assets/icon/svg/arrow-right.svg" style="font-size: x-large;color:#9e9e9e;opacity: 0.8;"></ion-icon>
+                    </ion-button>
+                </ion-item>
+            </ion-list>
+        </div>
+</ion-content>

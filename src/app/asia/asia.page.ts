@@ -1,5 +1,4 @@
 import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
-import { Bubbles } from "chat-bubble/component/Bubbles.js";
 import { ViewEncapsulation } from '@angular/core';
 
 import { SpeechRecognition} from '@ionic-native/speech-recognition/ngx';
@@ -18,6 +17,10 @@ import { FileTransfer, FileTransferObject, FileUploadOptions } from'@ionic-nativ
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
 import { Router } from '@angular/router';
+import { v } from '@angular/core/src/render3';
+import { Base64 } from '@ionic-native/base64/ngx';
+
+
 declare var ApiAIPromises: any;
 
 @Component({
@@ -47,9 +50,8 @@ export class AsiaPage implements OnInit
   private lastPartialSentence:string;
 
   private PARTIAL_SENTENCE_ID="show-partial";
-  private PARTIAL_SENTENCE_CONTAINER_ID="show-partial-container";
-  
 
+  private asiaSpeaks=false;
 
   constructor(public platform: Platform, private speechRecognizer: SpeechRecognition,
      private speaker:TextToSpeech, private ngZone:NgZone,
@@ -57,7 +59,7 @@ export class AsiaPage implements OnInit
      private camera: Camera, private webview: WebView, private actionSheetController: ActionSheetController,
      private toastController: ToastController, private plt: Platform, private loadingController: LoadingController,
      private ref: ChangeDetectorRef, private fP: FilePath, private fT: FileTransfer,
-     private localNotifications: LocalNotifications, private router:Router
+     public localNotifications: LocalNotifications, private router:Router, private b64:Base64
      ){
       platform.ready().then(() => {
         ApiAIPromises.init({
@@ -113,12 +115,29 @@ takePicture() {
         quality: 50,
         sourceType: this.camera.PictureSourceType.CAMERA,
         saveToPhotoAlbum: true,
-        correctOrientation: true
+        correctOrientation: true,
+        destinationType: this.camera.DestinationType.FILE_URI,
+        encodingType:this.camera.EncodingType.JPEG,
+        mediaType:this.camera.MediaType.PICTURE
     };
     this.camera.getPicture(options).then(imagePath => {
             var currentName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
             var correctPath = imagePath.substr(0, imagePath.lastIndexOf('/') + 1);
-            this.copyFileToLocalDir(correctPath, currentName, this.createFileName());      
+            this.copyFileToLocalDir(correctPath, currentName, this.createFileName());
+            //lettura img in base64 e aggiunta alla chat
+            this.b64.encodeFile(imagePath).then((base64File:string)=>{
+              console.log(base64File);
+              var imgElement=this.createImageBubble(base64File)
+              var div_chat=document.getElementById("asia-chat");
+              setTimeout(function(){
+                window.location.hash="";
+                div_chat.appendChild(imgElement);
+                //scroll
+                window.location.hash="#focusable"
+                },100);
+            this.lastMessageOwner='user';
+            })
+            
     })
 }
 
@@ -188,20 +207,23 @@ async uploadImageData(entry) {
           audioSpeech = speech;
           textSpeech = speech;
         }
-        var div_chat=document.getElementById("chat");
-        var bubble_wrap= div_chat.firstChild;
+        var div_chat=document.getElementById("asia-chat");
         var messageElement= this.createMessageElement(textSpeech,false,'asia');
         setTimeout(function(){
-          bubble_wrap.appendChild(messageElement);
+          window.location.hash="";
+          div_chat.appendChild(messageElement);
           //scroll
-          div_chat.scrollTop = div_chat.scrollHeight;
+          window.location.hash="#focusable"
         },100);
         //proprietario dell'ulltimo messaggio
         this.lastMessageOwner='asia';
       }
-
-      if(!this.AsiaSpeaksThroughSecretCommands(audioSpeech))
-        this.asiaSpeaksDefault(audioSpeech);
+      
+        if(!this.AsiaSpeaksThroughSecretCommands(audioSpeech)){
+          if(this.asiaSpeaks){
+            this.asiaSpeaksDefault(audioSpeech);
+          }
+        }
       this.asiaMessage = textSpeech;
      });
     
@@ -222,20 +244,22 @@ async uploadImageData(entry) {
         audioSpeech = speech;
         textSpeech = speech;
       }
-      var div_chat=document.getElementById("chat");
-      var bubble_wrap= div_chat.firstChild;
+      var div_chat=document.getElementById("asia-chat");
       var messageElement= this.createMessageElement(textSpeech,false,'asia');
       setTimeout(function(){
-        bubble_wrap.appendChild(messageElement);
+        window.location.hash="";
+        div_chat.appendChild(messageElement);
         //scroll
-        div_chat.scrollTop = div_chat.scrollHeight;
+        window.location.hash="#focusable"
       },100);
       //proprietario dell'ulltimo messaggio
       this.lastMessageOwner='asia';
     }
-
-    if(!this.AsiaSpeaksThroughSecretCommands(audioSpeech))
-      this.asiaSpeaksDefault(audioSpeech);
+    if(!this.AsiaSpeaksThroughSecretCommands(audioSpeech)){
+          if(this.asiaSpeaks){
+            this.asiaSpeaksDefault(audioSpeech);
+          }
+        }
     this.asiaMessage = textSpeech;
    });
 
@@ -257,19 +281,20 @@ async uploadImageData(entry) {
        commandMessage = alteredMessage[1].split('</slower>')[0];
        postCommandMessage = alteredMessage[1].split('</slower>')[1];
 
-        this.speaker.speak({
-          text: preCommandMessage,
-          locale: 'it-IT',
-          rate: 1
-         }).then(() => this.speaker.speak({
-          text: commandMessage,
-          locale: 'it-IT',
-          rate: 0.83
-         })).then(()=>this.speaker.speak({
-          text: postCommandMessage,
-          locale: 'it-IT',
-          rate: 1
-         }))     
+       if(this.asiaSpeaks)
+          this.speaker.speak({
+            text: preCommandMessage,
+            locale: 'it-IT',
+            rate: 1
+          }).then(() => this.speaker.speak({
+            text: commandMessage,
+            locale: 'it-IT',
+            rate: 0.83
+          })).then(()=>this.speaker.speak({
+            text: postCommandMessage,
+            locale: 'it-IT',
+            rate: 1
+          }))     
        return true;
     }else if(message.includes('<eng>') && message.includes('</eng>')){
       //convenzione: il secretCommand si riferisce alla string che segue il secret command
@@ -278,19 +303,20 @@ async uploadImageData(entry) {
       commandMessage = alteredMessage[1].split('</eng>')[0];
       postCommandMessage = alteredMessage[1].split('</eng>')[1];
 
-       this.speaker.speak({
-         text: preCommandMessage,
-         locale: 'it-IT',
-         rate: 1
-        }).then(() => this.speaker.speak({
-         text: commandMessage,
-         locale: 'en-GB',
-         rate: 0.9
-        })).then(()=>this.speaker.speak({
-         text: postCommandMessage,
-         locale: 'it-IT',
-         rate: 1
-        }))     
+      if(this.asiaSpeaks)
+        this.speaker.speak({
+          text: preCommandMessage,
+          locale: 'it-IT',
+          rate: 1
+          }).then(() => this.speaker.speak({
+          text: commandMessage,
+          locale: 'en-GB',
+          rate: 0.9
+          })).then(()=>this.speaker.speak({
+          text: postCommandMessage,
+          locale: 'it-IT',
+          rate: 1
+          }))     
       return true;
     }else if(message.includes('<critical>') && message.includes('</critical>')){
       //convenzione: il secretCommand si riferisce alla string che segue il secret command
@@ -298,19 +324,19 @@ async uploadImageData(entry) {
       preCommandMessage = alteredMessage[0];
       commandMessage = alteredMessage[1].split('</critical>')[0];
       postCommandMessage = alteredMessage[1].split('</critical>')[1];
-
-       this.speaker.speak({
-         text: preCommandMessage,
-         locale: 'it-IT',
-         rate: 1
-        }).then(() => {
-          this.warningLevel = 0;
-          //AZZERA WRNING LEVEL E CONTATTA OPERATORE
-        }).then(()=>this.speaker.speak({
-         text: postCommandMessage,
-         locale: 'it-IT',
-         rate: 1
-        }))     
+      if(this.asiaSpeaks)
+        this.speaker.speak({
+          text: preCommandMessage,
+          locale: 'it-IT',
+          rate: 1
+          }).then(() => {
+            this.warningLevel = 0;
+            //AZZERA WRNING LEVEL E CONTATTA OPERATORE
+          }).then(()=>this.speaker.speak({
+          text: postCommandMessage,
+          locale: 'it-IT',
+          rate: 1
+          }))     
       return true;
     }else
       return false;
@@ -339,27 +365,30 @@ async uploadImageData(entry) {
             audioSpeech = speech;
             textSpeech = speech;
           }
-          var div_chat=document.getElementById("chat");
-          var bubble_wrap= div_chat.firstChild;
+          var div_chat=document.getElementById("asia-chat");
           var messageElement= this.createMessageElement(textSpeech,false,'asia');
           setTimeout(function(){
-            bubble_wrap.appendChild(messageElement);
+            window.location.hash="";
+            div_chat.appendChild(messageElement);
             //scroll
-            div_chat.scrollTop = div_chat.scrollHeight;
+            window.location.hash="#focusable"
           },100);
           //proprietario dell'ulltimo messaggio
           this.lastMessageOwner='asia';
         }
 
-        if(!this.AsiaSpeaksThroughSecretCommands(audioSpeech))
-          this.asiaSpeaksDefault(audioSpeech);
+        if(!this.AsiaSpeaksThroughSecretCommands(audioSpeech)){
+          if(this.asiaSpeaks){
+            this.asiaSpeaksDefault(audioSpeech);
+          }
+        }
+
         this.asiaMessage = textSpeech;
        });
     })
   }
 
   ngOnInit(){
-    const chatWindow = new Bubbles(document.getElementById('chat'), "chatWindow");
     this.textMessage="";
     this.vocalInput=false;
     this.lastMessageOwner="asia";
@@ -386,6 +415,7 @@ async uploadImageData(entry) {
   }
 
   ngAfterViewInit(): void{
+    if(this.asiaSpeaks)
       this.asiaSpeaksDefault('Ciao, il mio nome è Asia!');  
   }
 
@@ -405,7 +435,6 @@ async uploadImageData(entry) {
             this.ngZone.run(()=>{
               console.log("NgZone running...");
               //Rimozione id dalla bubble di speech
-              document.getElementById(this.PARTIAL_SENTENCE_CONTAINER_ID).removeAttribute("id");
               document.getElementById(this.PARTIAL_SENTENCE_ID).removeAttribute("id");
               //Passaggio alla modalità testuale ad ascolto finito
               this.switchToTextual();
@@ -428,7 +457,7 @@ async uploadImageData(entry) {
     this.lastPartialSentence=". . .";
     //Se l'ascolto è stato interrotto viene rimossa
     //la speech bubble temporanea
-    var speechBubbleContainer=document.getElementById(this.PARTIAL_SENTENCE_CONTAINER_ID);
+    var speechBubbleContainer=document.getElementById(this.PARTIAL_SENTENCE_ID);
     if(speechBubbleContainer!=null)
       speechBubbleContainer.remove();
     if(this.isSpeechRecognizerAvailable){
@@ -473,8 +502,7 @@ async uploadImageData(entry) {
 
     this.textMessage=this.textMessage.trim();
     if(this.textMessage!=''){
-      var div_chat=document.getElementById("chat");
-      var bubble_wrap= div_chat.firstChild;
+      var div_chat=document.getElementById("asia-chat");
       var messageElement= this.createMessageElement(this.textMessage,false,'user');
 
       //metodoAsincronoPerIlSentimentAnalysis
@@ -483,9 +511,10 @@ async uploadImageData(entry) {
       this.ask(this.textMessage);
 
       setTimeout(function(){
-        bubble_wrap.appendChild(messageElement);
+        window.location.hash="";
+        div_chat.appendChild(messageElement);
         //scroll
-        div_chat.scrollTop = div_chat.scrollHeight;
+        window.location.hash="#focusable"
       },100);
       //proprietario dell'ulltimo messaggio
       this.lastMessageOwner='user';
@@ -502,12 +531,13 @@ async uploadImageData(entry) {
   }
 
   createSpeech2TextBubble(){
-    var div_chat=document.getElementById("chat");
-    var bubble_wrap= div_chat.firstChild;
+    var div_chat=document.getElementById("asia-chat");
     var messageElement=this.createMessageElement(this.lastPartialSentence,true,'user');
     setTimeout(function(){
-      bubble_wrap.appendChild(messageElement);
-      div_chat.scrollTop = div_chat.scrollHeight;
+        window.location.hash="";
+        div_chat.appendChild(messageElement);
+        //scroll
+        window.location.hash="#focusable"
     },100);
     this.lastMessageOwner='user';
     this.textMessage="";
@@ -515,62 +545,49 @@ async uploadImageData(entry) {
 
   createMessageElement(text:string,speech2Text:boolean,owner:string){
     var msgContainer=document.createElement("div");
+    var lastMessage=document.getElementById("focusable");
+    if(lastMessage!=null)
+      lastMessage.removeAttribute("id");
+
     if(owner=='user'){
       //Check del proprieterio dell'ultimo messaggio
-      var firstReplyClass=this.lastMessageOwner==='asia'?"first-reply":"";
-      msgContainer.setAttribute("class","message-container  reply-container "+firstReplyClass+" animated fadeIn");
-      msgContainer.setAttribute("style","margin-right: 17px;")
-      var bubble_reply=document.createElement("div");
-      bubble_reply.setAttribute("class","bubble reply");
-      var bubble_content=document.createElement("span");
-      bubble_content.setAttribute("class","bubble-content");
-      var text_container=document.createElement("span");
-      text_container.setAttribute("class","bubble-button bubble-pick");
+      var firstReplyClass=this.lastMessageOwner==='asia'?"first":"last";
+      msgContainer.setAttribute("class","bubble recipient "+firstReplyClass+" animated fadeIn");
+      msgContainer.setAttribute("_ngcontent-c1","");
+      msgContainer.setAttribute("style","margin-right:5px;");
+      msgContainer.setAttribute("id","focusable");
+      msgContainer.innerText=text;
       if(speech2Text){
-        //ids per il controllo della speech bubble
-        msgContainer.setAttribute("id",this.PARTIAL_SENTENCE_CONTAINER_ID);
-        text_container.setAttribute("id",this.PARTIAL_SENTENCE_ID);
+        //id per il controllo della speech bubble
+        msgContainer.setAttribute("id",this.PARTIAL_SENTENCE_ID);
       }
-      text_container.innerText=text;
-
-      bubble_content.appendChild(text_container);
-      bubble_reply.appendChild(bubble_content);
-      msgContainer.appendChild(bubble_reply);
-
     } else if(owner=='asia'){
-      msgContainer.setAttribute("class","message-container");
-      var ionGrid=document.createElement("ion-grid");
-      var ionRow=document.createElement("ion-row");
-      var avatarCol=document.createElement("ion-col");
-      avatarCol.setAttribute("size","2");
-      var ionAvatar=document.createElement("ion-avatar");
-      ionAvatar.setAttribute("class","responsive-img");
-      var imgAvatar=document.createElement("img");
-      imgAvatar.setAttribute("src","assets/img/asia_avatar.png");
-
-      ionAvatar.appendChild(imgAvatar);
-      if(this.lastMessageOwner==='user')
-        avatarCol.appendChild(ionAvatar);
-      
-      var msgCol=document.createElement("ion-col");
-      msgCol.setAttribute("size","10");
-      msgCol.setAttribute("style","padding-left: 5px");
-      var asiaMsgDiv=document.createElement("div");
-      var firstReplyClass=this.lastMessageOwner==='user'?"first-asia-message":"";
-      asiaMsgDiv.setAttribute("class","bubble say "+firstReplyClass);
-      var asiaMsgSpan=document.createElement("span");
-      asiaMsgSpan.setAttribute("class","bubble-content");
-      asiaMsgSpan.innerText=text;
-
-      asiaMsgDiv.appendChild(asiaMsgSpan);
-      msgCol.appendChild(asiaMsgDiv);
-
-      ionRow.appendChild(avatarCol);
-      ionRow.appendChild(msgCol);
-      ionGrid.appendChild(ionRow);
-      msgContainer.appendChild(ionGrid);
+      var firstReplyClass=this.lastMessageOwner==='user'?"first":"last";
+      msgContainer.setAttribute("class","bubble sender "+firstReplyClass+" animated fadeIn");
+      msgContainer.setAttribute("_ngcontent-c1","");
+      msgContainer.setAttribute("style","margin-left:5px;");  
+      msgContainer.setAttribute("id","focusable");
+      msgContainer.innerText=text;
     }
 
+    return msgContainer;
+  }
+
+  createImageBubble(path:any){
+    var msgContainer=document.createElement("div");
+    var lastMessage=document.getElementById("focusable");
+    if(lastMessage!=null)
+      lastMessage.removeAttribute("id");
+    var firstReplyClass=this.lastMessageOwner==='asia'?"first":"last";
+    msgContainer.setAttribute("class","bubble recipient "+firstReplyClass+" animated fadeIn");
+    msgContainer.setAttribute("_ngcontent-c1","");
+    msgContainer.setAttribute("style","margin-left: 5px;padding: 0;overflow: hidden;");
+    msgContainer.setAttribute("id","focusable");
+    var img=document.createElement("img");
+    img.setAttribute("src",path);
+    img.setAttribute("style","display:block;");
+    msgContainer.appendChild(img);
+    
     return msgContainer;
   }
 

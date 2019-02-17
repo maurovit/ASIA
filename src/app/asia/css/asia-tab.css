@@ -28,72 +28,74 @@ ion-fab ion-fab-button button
     box-shadow: none;
 }
 
-div#chat
+.discussion 
 {
-    height: 100%;
-    overflow-y: auto;
+	max-width: 100%;
+	margin: 0 auto;
+	
+	display: flex;
+	flex-flow: column;
 }
 
-div.bubble-wrap
+.discussion > .bubble 
 {
-    overflow-y: visible;
+	border-radius: 1.1em;
+	margin: 0.0625em;
+	max-width: 80%;
+    line-height: 1.4em;
+    letter-spacing: 0.1em;
+    font-size: 12px;
 }
 
-.message-container
+.discussion > .bubble.sender 
 {
-    display: inline-block!important;
-    width: 100%!important;
+	align-self: flex-start;
+	padding: 10px 5px 10px 10px;
+	background-color: #E0E0E0;
+    color:#414141;
+}
+.discussion > .bubble.recipient 
+{
+	align-self: flex-end;
+	background-color: #039be5;
+	color: #fcfcfc;
+    text-align: right;
+	padding: 10px 10px 10px 5px;
+    border: 1px solid #eeeeee;
 }
 
-.message-container .say
-{
-    background-color: #DCDCDC;
-    color: #424242;
+.discussion > .bubble.sender.first 
+{ 
+    border-bottom-left-radius: 0.1em; 
+    margin-top: 5px;
 }
 
-.message-container .reply .bubble-pick
-{
-    background-color: #1E88E5!important;
-    color: #FCFCFC;
+.discussion > .bubble.sender.last 
+{ 
+    border-top-left-radius: 0.1em; 
 }
 
-.reply-container
+.discussion > .bubble.sender.middle 
 {
-    margin-top: -3px;
+	border-bottom-left-radius: 0.1em;
+ 	border-top-left-radius: 0.1em;
 }
 
-div.bubble-wrap .message-container div
-{
-    margin-right: 17px !important;
+.discussion > .bubble.recipient.first 
+{ 
+    border-bottom-right-radius: 0.1em; 
+    margin-top: 5px;
 }
 
-div.message-container ion-grid,
-div.message-container ion-grid ion-row,
-div.message-container ion-grid ion-row ion-col
-{
-    padding: 0;
+.discussion > .bubble.recipient.last 
+{ 
+    border-top-right-radius: 0.1em; 
 }
 
-.first-asia-message
+.discussion > .bubble.recipient.middle 
 {
-    position: absolute;
-    bottom: 0;
-}
-
-.responsive-img 
-{
-    width: 100%;
-    height: auto;
-}
-
-div.first-reply
-{
-    margin-top: 10px;
-}
-
-.reply .bubble-content
-{
-    opacity: 1!important;
+	border-bottom-right-radius: 0.1em;
+	border-top-right-radius: 0.1em;
 }
 
 .input-and-button-wrapper
@@ -363,6 +365,16 @@ Stretch Right Animation
     {
         height: 15%!important;
     }
+    
+    #camera
+    {
+        display: none;
+    }
+    
+    #speaks
+    {
+        display: none;
+    }
 }
 /*
 ==============================================
@@ -377,4 +389,9 @@ Colors
 .ion-color-footer
 {
   --ion-color-base:#fcfcfc;
+}
+
+.ion-color-chat-background
+{
+    --ion-color-base:#F0F0F0;
 }
