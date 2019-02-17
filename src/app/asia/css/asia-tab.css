@@ -365,6 +365,16 @@ Stretch Right Animation
     {
         height: 15%!important;
     }
+    
+    #camera
+    {
+        display: none;
+    }
+    
+    #speaks
+    {
+        display: none;
+    }
 }
 /*
 ==============================================

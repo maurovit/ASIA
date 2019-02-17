@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { File } from '@ionic-native/file/ngx';
 import { Router } from '@angular/router';
+import { NativeStorage } from '@ionic-native/native-storage/ngx';
 
 interface Contact{
   id:string;
@@ -23,7 +24,9 @@ export class CommunityPage{
   MESSAGES_ID:string='messages';
   CONTACTS_FILE:string='contacts.json';
 
-  constructor(private db:AngularFirestore,private file:File,private router:Router){
+  constructor(private db:AngularFirestore,private file:File,private router:Router,private storage:NativeStorage){
+
+    storage.getItem('email').then(data=>{console.log("mail",data)});
     
     file.checkFile(file.dataDirectory,this.CONTACTS_FILE)
         .then(exists=>{

@@ -156,7 +156,7 @@ export class ChatPage {
   }
 
   goBack(){
-    this.router.navigate(["../"]);
     this.subscription.unsubscribe();
+    this.router.navigate(["/tabs"]);
   }
 }

@@ -51,6 +51,8 @@ export class AsiaPage implements OnInit
 
   private PARTIAL_SENTENCE_ID="show-partial";
 
+  private asiaSpeaks=false;
+
   constructor(public platform: Platform, private speechRecognizer: SpeechRecognition,
      private speaker:TextToSpeech, private ngZone:NgZone,
      public navCtrl: NavController,private file:File, private http : HTTP, private alertController: AlertController,
@@ -216,9 +218,12 @@ async uploadImageData(entry) {
         //proprietario dell'ulltimo messaggio
         this.lastMessageOwner='asia';
       }
-
-      if(!this.AsiaSpeaksThroughSecretCommands(audioSpeech))
-        this.asiaSpeaksDefault(audioSpeech);
+      
+        if(!this.AsiaSpeaksThroughSecretCommands(audioSpeech)){
+          if(this.asiaSpeaks){
+            this.asiaSpeaksDefault(audioSpeech);
+          }
+        }
       this.asiaMessage = textSpeech;
      });
     
@@ -250,9 +255,11 @@ async uploadImageData(entry) {
       //proprietario dell'ulltimo messaggio
       this.lastMessageOwner='asia';
     }
-
-    if(!this.AsiaSpeaksThroughSecretCommands(audioSpeech))
-      this.asiaSpeaksDefault(audioSpeech);
+    if(!this.AsiaSpeaksThroughSecretCommands(audioSpeech)){
+          if(this.asiaSpeaks){
+            this.asiaSpeaksDefault(audioSpeech);
+          }
+        }
     this.asiaMessage = textSpeech;
    });
 
@@ -274,19 +281,20 @@ async uploadImageData(entry) {
        commandMessage = alteredMessage[1].split('</slower>')[0];
        postCommandMessage = alteredMessage[1].split('</slower>')[1];
 
-        this.speaker.speak({
-          text: preCommandMessage,
-          locale: 'it-IT',
-          rate: 1
-         }).then(() => this.speaker.speak({
-          text: commandMessage,
-          locale: 'it-IT',
-          rate: 0.83
-         })).then(()=>this.speaker.speak({
-          text: postCommandMessage,
-          locale: 'it-IT',
-          rate: 1
-         }))     
+       if(this.asiaSpeaks)
+          this.speaker.speak({
+            text: preCommandMessage,
+            locale: 'it-IT',
+            rate: 1
+          }).then(() => this.speaker.speak({
+            text: commandMessage,
+            locale: 'it-IT',
+            rate: 0.83
+          })).then(()=>this.speaker.speak({
+            text: postCommandMessage,
+            locale: 'it-IT',
+            rate: 1
+          }))     
        return true;
     }else if(message.includes('<eng>') && message.includes('</eng>')){
       //convenzione: il secretCommand si riferisce alla string che segue il secret command
@@ -295,19 +303,20 @@ async uploadImageData(entry) {
       commandMessage = alteredMessage[1].split('</eng>')[0];
       postCommandMessage = alteredMessage[1].split('</eng>')[1];
 
-       this.speaker.speak({
-         text: preCommandMessage,
-         locale: 'it-IT',
-         rate: 1
-        }).then(() => this.speaker.speak({
-         text: commandMessage,
-         locale: 'en-GB',
-         rate: 0.9
-        })).then(()=>this.speaker.speak({
-         text: postCommandMessage,
-         locale: 'it-IT',
-         rate: 1
-        }))     
+      if(this.asiaSpeaks)
+        this.speaker.speak({
+          text: preCommandMessage,
+          locale: 'it-IT',
+          rate: 1
+          }).then(() => this.speaker.speak({
+          text: commandMessage,
+          locale: 'en-GB',
+          rate: 0.9
+          })).then(()=>this.speaker.speak({
+          text: postCommandMessage,
+          locale: 'it-IT',
+          rate: 1
+          }))     
       return true;
     }else if(message.includes('<critical>') && message.includes('</critical>')){
       //convenzione: il secretCommand si riferisce alla string che segue il secret command
@@ -315,19 +324,19 @@ async uploadImageData(entry) {
       preCommandMessage = alteredMessage[0];
       commandMessage = alteredMessage[1].split('</critical>')[0];
       postCommandMessage = alteredMessage[1].split('</critical>')[1];
-
-       this.speaker.speak({
-         text: preCommandMessage,
-         locale: 'it-IT',
-         rate: 1
-        }).then(() => {
-          this.warningLevel = 0;
-          //AZZERA WRNING LEVEL E CONTATTA OPERATORE
-        }).then(()=>this.speaker.speak({
-         text: postCommandMessage,
-         locale: 'it-IT',
-         rate: 1
-        }))     
+      if(this.asiaSpeaks)
+        this.speaker.speak({
+          text: preCommandMessage,
+          locale: 'it-IT',
+          rate: 1
+          }).then(() => {
+            this.warningLevel = 0;
+            //AZZERA WRNING LEVEL E CONTATTA OPERATORE
+          }).then(()=>this.speaker.speak({
+          text: postCommandMessage,
+          locale: 'it-IT',
+          rate: 1
+          }))     
       return true;
     }else
       return false;
@@ -368,8 +377,12 @@ async uploadImageData(entry) {
           this.lastMessageOwner='asia';
         }
 
-        if(!this.AsiaSpeaksThroughSecretCommands(audioSpeech))
-          this.asiaSpeaksDefault(audioSpeech);
+        if(!this.AsiaSpeaksThroughSecretCommands(audioSpeech)){
+          if(this.asiaSpeaks){
+            this.asiaSpeaksDefault(audioSpeech);
+          }
+        }
+
         this.asiaMessage = textSpeech;
        });
     })
@@ -402,6 +415,7 @@ async uploadImageData(entry) {
   }
 
   ngAfterViewInit(): void{
+    if(this.asiaSpeaks)
       this.asiaSpeaksDefault('Ciao, il mio nome è Asia!');  
   }
 

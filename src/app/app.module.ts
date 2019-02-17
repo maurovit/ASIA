@@ -32,8 +32,6 @@ import { FileTransfer } from'@ionic-native/file-transfer/ngx';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
 
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
-
-import firebaseConfig from './firebase';
 import { AngularFireAuthModule } from '@angular/fire/auth'
 import { UserService } from './user.service';
 import { AuthService } from './auth.service';

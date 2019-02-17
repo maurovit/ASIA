@@ -3,10 +3,13 @@
   <ion-toolbar color="asia-toolbar">
     <ion-grid>
         <ion-row>
-            <ion-col>
-                <ion-thumbnail>
+            <ion-col size="9">
+                <ion-thumbnail id="camera">
                     <ion-img src="assets/icon/svg/camera.svg" style="width:85%; height: 85%" (click)="takePicture()"> </ion-img>
                 </ion-thumbnail>
+            </ion-col>
+            <ion-col size="3">
+                <ion-toggle id="speaks" mode="md" [(ngModel)]="asiaSpeaks"></ion-toggle>
             </ion-col>
         </ion-row>
     </ion-grid>
