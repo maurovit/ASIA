@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { NativeStorage } from '@ionic-native/native-storage/ngx';
 
 interface Message
 {
@@ -30,11 +30,16 @@ export class ChatPage {
 
   subscription;
 
-  constructor(private db:AngularFirestore,private route:ActivatedRoute, private router:Router){
+  constructor(private db:AngularFirestore,private route:ActivatedRoute, private router:Router,private storage:NativeStorage){
+
+    this.storage.getItem('email').then(data=>{
+      this.USER_ID=data;
+    })
+
     this.textMessage='';
     this.OPERATOR_ID=this.route.snapshot.paramMap.get("operator_id");
     this.lastMessageOwner=this.OPERATOR_ID;
-    this.USER_ID='mavit';
+    
     this.messagesMap=new Map<string,any>();
     this.orderedMessages=[];
     this.listenMessage();
