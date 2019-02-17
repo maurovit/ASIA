@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/auth'
-import { auth } from 'firebase/app'
+import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { UserService } from '../user.service';
 import { NavController, ToastController, AlertController, LoadingController } from '@ionic/angular';
@@ -52,6 +51,7 @@ export class LoginPage implements OnInit {
 					uid: res.user.uid
 				})
 				this.storage.setItem("idUtente",res.user.uid);
+				this.storage.setItem("email",res.user.email);
 				this.router.navigate(['/tabs'])
 			}
 		

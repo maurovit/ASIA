@@ -13,8 +13,11 @@ import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { SpeechRecognition } from '@ionic-native/speech-recognition/ngx';
 import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 
+import { AngularFireModule } from '@angular/fire';
+import { AngularFirestoreModule, AngularFirestore } from '@angular/fire/firestore';
+import { environment } from '../environments/environment';
+import { File } from '@ionic-native/file/ngx';
 import { HTTP } from '@ionic-native/http/ngx';
-import {File} from '@ionic-native/file/ngx';
 
 import { HttpClientModule } from '@angular/common/http';
  
@@ -29,24 +32,24 @@ import { FileTransfer } from'@ionic-native/file-transfer/ngx';
 import { FileChooser } from '@ionic-native/file-chooser/ngx';
 
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
-
-import firebaseConfig from './firebase'
-import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth'
 import { UserService } from './user.service';
 import { AuthService } from './auth.service';
-//import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { HttpModule } from '@angular/http'
+import { HttpModule } from '@angular/http';
+import { Base64 } from '@ionic-native/base64/ngx';
+
 
 
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule,
-     IonicStorageModule.forRoot(),
-     AngularFireModule.initializeApp(firebaseConfig),
-     AngularFireAuthModule,
-     HttpModule
+  imports: [BrowserModule, IonicModule.forRoot(),
+    AppRoutingModule,
+    AngularFirestoreModule,
+    AngularFireModule.initializeApp(environment.firebase),
+    IonicStorageModule.forRoot(),
+    AngularFireAuthModule,
+    HttpModule
     ],
   providers: [
     StatusBar,
@@ -55,6 +58,7 @@ import { HttpModule } from '@angular/http'
     Keyboard,
     SpeechRecognition,
     TextToSpeech,
+    AngularFirestore,
     HTTP,
     File,
     Camera,
@@ -65,7 +69,8 @@ import { HttpModule } from '@angular/http'
     FileChooser,
     LocalNotifications,
     UserService,
-    AuthService
+    AuthService,
+    Base64
   ],
   bootstrap: [AppComponent]
 })
