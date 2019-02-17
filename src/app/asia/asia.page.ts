@@ -66,26 +66,25 @@ export class AsiaPage implements OnInit
       });   
       //Si inizializza il warning level   
       this.warningLevel = 0;
-      
 
       this.platform.pause.subscribe(()=>{
         //Si calcola l'indice della frase di Asia
-      let random_number = Math.random() * 2;
-      var index = Math.floor(random_number);
-      this.asiaFirstString = this.AsiaEntranceSentences[index];
-        this.localNotifications.schedule({
-          title: 'Asia dice',
-          text: this.AsiaEntranceSentences[index],
-          trigger: {at: new Date(new Date().getTime() + 5000)},
-          //trigger: { every: { minute: 34 }},
-          led: 'FFFFFF',
-          sound: this.platform.is('android')? 'file://sound.mp3': 'file://beep.caf',
-          icon : 'C:\\Users\\hp\\Desktop\\Logo finale\\logo-finale.png' //url
+        let random_number = Math.random() * 2;
+        var index = Math.floor(random_number);
+        this.asiaFirstString = this.AsiaEntranceSentences[index];
+          this.localNotifications.schedule({
+            title: 'Asia dice',
+            text: this.AsiaEntranceSentences[index],
+            trigger: {at: new Date(new Date().getTime() + 10000)},
+            //trigger: { every: { minute: 34 }},
+            led: 'FFFFFF',
+            sound: this.platform.is('android')? 'file://sound.mp3': 'file://beep.caf',
+            icon : 'C:\\Users\\hp\\Desktop\\Logo finale\\logo-finale.png' //url
        });
       });
 
       this.platform.resume.subscribe(()=>{
-        this.localNotifications.cancel;
+        this.localNotifications.cancel(this.localNotifications.getIds);
       });
 
   }
