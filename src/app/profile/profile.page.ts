@@ -25,7 +25,7 @@ export class ProfilePage {
   
 
   private urlImmagine:string;
-  private urlBase:string = "http://192.168.1.79:8080/AsiaUtils/images/";
+  private urlBase:string = "http://ec2-3-87-190-68.compute-1.amazonaws.com:8080/AsiaUtils/images/";
 
   constructor(private user: UserService, private router: Router,
      public navCtrl: NavController, private storage : NativeStorage,
@@ -69,7 +69,7 @@ export class ProfilePage {
   }
 
   async updateServer(){
-    var urlRegistrazione = "http://192.168.1.79:8080/AsiaUtils/RegistrazioneOperatore";
+    var urlRegistrazione = "http://ec2-3-87-190-68.compute-1.amazonaws.com:8080/AsiaUtils/RegistrazioneOperatore";
     
     var params = {
       nominativo: this.nominativo,
@@ -165,7 +165,7 @@ async uploadImageData(entry) {
  }
 
   var keyAPIAsia = '';
-  const uriBase = 'http://192.168.1.79:8080/AsiaUtils/ManageProfilePicture';
+  const uriBase = 'http://ec2-3-87-190-68.compute-1.amazonaws.com:8080/AsiaUtils/ManageProfilePicture';
   
   const fileTransfer: FileTransferObject = this.fTProfile.create();
   fileTransfer.upload(imgEntry.filePath, uriBase, options).then((data)=>{ 
