@@ -9,7 +9,6 @@ import { Router } from '@angular/router';
 
 import { HTTP } from '@ionic-native/http/ngx';
 import { FileTransfer, FileTransferObject, FileUploadOptions } from'@ionic-native/file-transfer/ngx';
-import { OperatorTabsPage } from '../operator-tabs/operator-tabs.page';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
 
 @Component({

@@ -9,7 +9,6 @@ import { TabsPageRoutingModule } from './tabs.router.module';
 import { TabsPage } from './tabs.page';
 import { ProfilePageModule } from '../profile/profile.module';
 import { CommunityPageModule } from '../community/community.module';
-import { AsiaPageModule } from '../asia/asia.module';
 
 @NgModule({
   imports: [
@@ -17,7 +16,6 @@ import { AsiaPageModule } from '../asia/asia.module';
     CommonModule,
     FormsModule,
     TabsPageRoutingModule,
-    AsiaPageModule,
     CommunityPageModule,
     ProfilePageModule
   ],

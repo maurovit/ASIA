@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { TabsPage } from './tabs.page';
-import { AsiaPage } from '../asia/asia.page';
 import { CommunityPage } from '../community/community.page';
 import { ProfilePage } from '../profile/profile.page';
 
@@ -13,14 +12,10 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: '/tabs/(asia:asia)',
+        redirectTo: '/tabs/(community:community)',
         pathMatch: 'full',
       },
-      {
-        path: 'asia',
-        outlet: 'asia',
-        component: AsiaPage
-      },
+
       {
         path: 'community',
         outlet: 'community',
@@ -35,7 +30,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: '/tabs/(asia:asia)',
+    redirectTo: '/tabs/(community:community)',
     pathMatch: 'full'
   }
 ];
