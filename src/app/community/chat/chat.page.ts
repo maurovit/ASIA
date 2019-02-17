@@ -139,14 +139,14 @@ export class ChatPage {
       //Check del proprieterio dell'ultimo messaggio
       var firstReplyClass=this.lastMessageOwner===this.OPERATOR_ID?"first":"last";
       msgContainer.setAttribute("class","bubble recipient "+firstReplyClass+" animated fadeIn");
-      msgContainer.setAttribute("_ngcontent-c4","");
+      msgContainer.setAttribute("_ngcontent-c5","");
       msgContainer.setAttribute("style","margin-right:5px;");
       msgContainer.setAttribute("id","focusable");
       msgContainer.innerText=text;
     } else if(owner==this.OPERATOR_ID){
       var firstReplyClass=this.lastMessageOwner===this.USER_ID?"first":"last";
       msgContainer.setAttribute("class","bubble sender "+firstReplyClass+" animated fadeIn");
-      msgContainer.setAttribute("_ngcontent-c4","");
+      msgContainer.setAttribute("_ngcontent-c5","");
       msgContainer.setAttribute("style","margin-left:5px;");  
       msgContainer.setAttribute("id","focusable");
       msgContainer.innerText=text;

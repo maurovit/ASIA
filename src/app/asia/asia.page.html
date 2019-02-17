@@ -1,59 +1,27 @@
 <!-- TOOLBAR -->
 <ion-header no-border>
   <ion-toolbar color="asia-toolbar">
-    <ion-title></ion-title>
+    <ion-grid>
+        <ion-row>
+            <ion-col>
+                <ion-thumbnail>
+                    <ion-img src="assets/icon/svg/camera.svg" style="width:85%; height: 85%" (click)="takePicture()"> </ion-img>
+                </ion-thumbnail>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+    <ion-title></ion-title>  
   </ion-toolbar>
 </ion-header>
 
 <!-- CHATBOT -->
-<ion-content>
-    <div id="chat">
-        <!-- MESSAGES CONTAINER -->
-        <div id="chat-wrap" class="bubble-wrap">
-            <ion-grid>
-                <ion-row>
-                    <div class="message-container">
-                        <ion-grid>
-                            <ion-row>
-                                <ion-col size="2">
-                                    <ion-avatar class="responsive-img">
-                                        <img src="assets/img/asia_avatar.png">
-                                    </ion-avatar>
-                                </ion-col>
-                                <ion-col size="10" style="padding-left: 5px">
-                                    <div class="bubble say first-asia-message">
-                                        <span class="bubble-content" >Ciao! Il mio nome è Asia</span>
-                                    </div>
-                                </ion-col>
-                            </ion-row>
-                        </ion-grid>
-                    </div>
-                </ion-row>
-            
-            </ion-grid>
-            <!--
-            <div class="message-container">
-                <ion-grid>
-                    <ion-row>
-                        <ion-col size="2">
-                        </ion-col>
-                        <ion-col size="10" style="padding-left: 5px">
-                            <div class="bubble say">
-                                <span class="bubble-content">Second-Message
-                                </span>
-                            </div>  
-                        </ion-col>
-                    </ion-row>
-                </ion-grid>
-            </div> 
-            <div class="message-container reply-container first-reply">
-                <div class="bubble reply">
-                    <span class="bubble-content">
-                        <span class="bubble-button bubble-pick">It's ok</span>
-                    </span>
-                </div>
-            </div>-->
-        </div>
+<ion-content color="chat-background">
+    <div id="asia-chat" class="discussion">
+        <div class="bubble sender first animated fadeIn" style="margin-left: 5px">{{asiaFirstString}}</div>
+        <!--
+        <div class="bubble recipient first animated fadeIn" style="margin-left: 5px;padding: 0;overflow: hidden;">
+            <img src="assets/img/selfie.jpg" style="display: block;">
+        </div>-->
     </div>
 </ion-content>
 <!-- CHATBOX -->

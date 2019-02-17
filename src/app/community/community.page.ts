@@ -47,6 +47,7 @@ export class CommunityPage{
                       .snapshotChanges(['added'])
                       .subscribe(snapshot=>{
                         this.inMessage=snapshot;
+                        console.log(snapshot)
                         for(let msg of this.inMessage){
                           var segments_index=msg.payload.doc._key.path.segments.length-1;
                           var operator_id=msg.payload.doc._key.path.segments[segments_index];
@@ -75,11 +76,12 @@ export class CommunityPage{
   readContactsFile(){
     this.file.readAsText(this.file.dataDirectory,this.CONTACTS_FILE)
                         .then(content=>{
-                          console.log(content);
-                          let savedContacts=JSON.parse(content);
-                          this.contacts=savedContacts;
-                          for(let sc of savedContacts){
-                            this.contactsMap.set(sc.id,null);
+                          if(content!=''){
+                            let savedContacts=JSON.parse(content);
+                            this.contacts=savedContacts;
+                            for(let sc of savedContacts){
+                              this.contactsMap.set(sc.id,null);
+                            }
                           }
                         })
                         .catch(error=>{

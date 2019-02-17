@@ -1,0 +1,15 @@
+.ion-color-asia-toolbar
+{
+  --ion-color-base: radial-gradient( circle farthest-corner at 10% 20%,  #00B4DB 0%, #1E88E5 99.1% )!important;
+}
+
+:host {
+  ion-content {
+      --background: linear-gradient(135deg, var(--ion-color-dark), var(--ion-color-primary));
+  }
+}
+
+.paz {
+  position: relative;
+  z-index: 10;
+}
