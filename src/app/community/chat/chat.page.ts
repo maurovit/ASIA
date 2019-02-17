@@ -34,15 +34,15 @@ export class ChatPage {
 
     this.storage.getItem('email').then(data=>{
       this.USER_ID=data;
+      this.OPERATOR_ID=this.route.snapshot.paramMap.get("operator_id");
+      this.lastMessageOwner=this.OPERATOR_ID;
+      this.listenMessage();
     })
 
     this.textMessage='';
-    this.OPERATOR_ID=this.route.snapshot.paramMap.get("operator_id");
-    this.lastMessageOwner=this.OPERATOR_ID;
     
     this.messagesMap=new Map<string,any>();
     this.orderedMessages=[];
-    this.listenMessage();
   }
 
   sendMessage(){

@@ -26,7 +26,7 @@ export class CommunityPage{
 
   USER_ID:string;
   MESSAGES_ID:string='messages';
-  CONTACTS_FILE:string='contacts.json';
+  CONTACTS_FILE:string='chat-contacts.json';
 
   SERVER_URL='http://192.168.1.12:8080/AsiaUtils/';
 
@@ -34,6 +34,8 @@ export class CommunityPage{
     //Recupero id utente
     storage.getItem('email').then(data=>{
       this.USER_ID=data;
+      console.log("ID",this.USER_ID);
+      this.listenChats();
     });
     //Check esistenza file
     file.checkFile(file.dataDirectory,this.CONTACTS_FILE)
@@ -50,15 +52,14 @@ export class CommunityPage{
     this.contactsMap=new Map<string,any>();
     this.contacts=[];
     this.readContactsFile();
-    this.listenChats();
   }
 
   listenChats(){
     this.db.collection(this.USER_ID)
-                      .snapshotChanges(['added'])
+                      .stateChanges()
                       .subscribe(snapshot=>{
                         this.inMessage=snapshot;
-                        console.log(snapshot)
+                        console.log("snapshot",snapshot)
                         for(let msg of this.inMessage){
                           var segments_index=msg.payload.doc._key.path.segments.length-1;
                           var operator_id=msg.payload.doc._key.path.segments[segments_index];
