@@ -1,15 +1,62 @@
 <ion-header no-border>
-  <ion-toolbar color="asia-toolbar">
+  <ion-toolbar color="">
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="profile">      
-    
-    <div text-center>
-      <ion-button size="small" shape="round" color="primary" (click)="logout()">
-          <ion-icon name="log-out"></ion-icon>
-          logout
-      </ion-button>
-    </div>
+<ion-content class="profile">     
+    <ion-card no-margin>
+
+   <ion-card-content style="color:primary;"class="bg-profile">
+        
+          <img alt="Nessuna foto disbonibile" src={{urlImmagine}}>
+          <h1 class="fw500"></h1>
+          <h2 color="light" margin-bottom></h2>
+          <ion-button icon-left color="secondary" (click)="takeProfilePicture()">
+            <ion-icon name="photos"></ion-icon> 
+            Modifica Foto
+          </ion-button>
+    </ion-card-content>
+
+        <ion-grid fixed no-padding>
+            <ion-row>
+              <ion-col size="12" padding>
+
+                  <ion-list margin-bottom>
+                    <ion-item>
+                        <ion-label color="dark" position="stacked">Nome e Cognome:</ion-label>
+                        <ion-input inputmode="text" [(ngModel)]="nominativo"></ion-input>
+                      </ion-item>
+              
+                      <ion-item>
+                        <ion-label color="dark" position="stacked">Email:</ion-label>
+                        <ion-input inputmode="email" readonly [(ngModel)]="email"></ion-input>
+                      </ion-item>
+              
+                      <ion-item>
+                        <ion-label color="dark" position="stacked">Descrizione:</ion-label>
+                        <ion-input inputmode="text" [(ngModel)]="descrizione"></ion-input>
+                      </ion-item>
+         
+                      
+     
+                    </ion-list>
+                  </ion-col>
+                  
+                </ion-row>
+              </ion-grid>
+
+        <div text-center style="margin-top:1%;">
+          <ion-button icon-center color="primary" (click)="updateServer()">
+                <ion-icon name="upload" ></ion-icon> 
+                Aggiorna dati
+          </ion-button>
+        </div>
+        <div text-center style="margin-top:2%;">
+          <ion-button size="small" shape="round" color="primary" (click)="logout()">
+              <ion-icon name="log-out"></ion-icon>
+              logout
+          </ion-button>
+        </div>
+     </ion-card>
     
 </ion-content>
