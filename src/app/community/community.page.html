@@ -1,6 +1,34 @@
 <ion-header no-border>
-  <ion-toolbar>
+  <ion-toolbar color="community-toolbar">
   </ion-toolbar>
 </ion-header>
 
-<ion-content></ion-content>
+<ion-content color="community-background">
+        <div id="list-container">
+            <span id="community-label">Emergenze</span>
+            <ion-list>
+                <ion-item *ngFor="let em of emList">
+                    <ion-label>
+                        <ion-grid>
+                            <ion-row>
+                                <!--ICON COL -->
+                                <ion-col size="3">
+                                    <ion-icon name="alert" color="danger" style="font-size: large;"></ion-icon>
+                                </ion-col>
+                                <!--EM COL-->
+                                <ion-col size="9">
+                                    <!-- MAIL DIV-->
+                                    <div id="name-div" class="contact-div">
+                                        <span>{{em}}</span>
+                                    </div>
+                                </ion-col>
+                            </ion-row>
+                        </ion-grid>
+                    </ion-label>
+                    <ion-button fill="clear" (click)="openChat(em)">
+                        <ion-icon src="assets/icon/svg/arrow-right.svg" style="font-size: x-large;color:#9e9e9e;opacity: 0.8;"></ion-icon>
+                    </ion-button>
+                </ion-item>
+            </ion-list>
+        </div>
+</ion-content>

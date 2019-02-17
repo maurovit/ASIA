@@ -1,0 +1,223 @@
+*
+{
+    scroll-behavior: smooth;
+}
+
+ion-header
+{
+    height: 11%;
+}
+
+ion-footer
+{
+    height: 10%!important;
+}
+
+ion-footer ion-toolbar
+{
+    background: #fcfcfc!important;
+}
+
+ion-toolbar
+{
+    height: 100%!important;
+}
+
+ion-title
+{
+    padding-top: 8%;
+}
+
+ion-title span
+{
+    text-align: center;
+    font-size: 17px;
+    color:#039be5;
+    width:80%;
+}
+
+ion-title ion-icon
+{
+    font-size: xx-large;
+    color: #039be5;
+}
+
+.input-and-button-wrapper
+{
+    display: block;
+    margin: auto;
+    border-radius: 30px;
+    
+    background-color: #fcfcfc;
+    border: 1px solid #dcdcdc;
+}
+
+input#chatbox
+{
+    display: block;
+    width: 100%;
+    margin: auto;
+    padding: 10px;
+    border: none;
+    font-size: 15px;
+    border-radius: 30px;
+    
+    background-color: #fcfcfc;
+}
+
+.input-and-button-wrapper ion-grid,
+.input-and-button-wrapper ion-grid ion-row,
+.input-and-button-wrapper ion-grid ion-row ion-col
+{
+    margin: 0;
+    padding: 0;
+}
+
+.discussion 
+{
+	max-width: 100%;
+	margin: 0 auto;
+	
+	display: flex;
+	flex-flow: column;
+}
+
+.discussion > .bubble 
+{
+	border-radius: 1.1em;
+	margin: 0.0625em;
+	max-width: 80%;
+    line-height: 1.4em;
+    letter-spacing: 0.1em;
+    font-size: 12px;
+}
+
+.discussion > .bubble.sender 
+{
+	align-self: flex-start;
+	background-color: #039be5;
+	padding: 10px 5px 10px 10px;
+	color: #fcfcfc;
+}
+.discussion > .bubble.recipient 
+{
+	align-self: flex-end;
+	background-color: #E0E0E0;
+    color:#414141;
+    text-align: right;
+	padding: 10px 10px 10px 5px;
+    border: 1px solid #eeeeee;
+}
+
+.discussion > .bubble.sender.first 
+{ 
+    border-bottom-left-radius: 0.1em; 
+    margin-top: 5px;
+}
+
+.discussion > .bubble.sender.last 
+{ 
+    border-top-left-radius: 0.1em; 
+}
+
+.discussion > .bubble.sender.middle 
+{
+	border-bottom-left-radius: 0.1em;
+ 	border-top-left-radius: 0.1em;
+}
+
+.discussion > .bubble.recipient.first 
+{ 
+    border-bottom-right-radius: 0.1em; 
+    margin-top: 5px;
+}
+
+.discussion > .bubble.recipient.last 
+{ 
+    border-top-right-radius: 0.1em; 
+}
+
+.discussion > .bubble.recipient.middle 
+{
+	border-bottom-right-radius: 0.1em;
+	border-top-right-radius: 0.1em;
+}
+
+#separator
+{
+    width: 92%;
+    height: 1px;
+    margin: auto;
+    background-color: #E0E0E0;
+}
+
+.send-message-button
+{
+    height: 100%;
+    width: 100%;
+    background-color: transparent;
+    margin: auto
+}
+
+.send-message-button ion-icon
+{
+    font-size: 45px;
+}
+
+input:focus, button:focus{
+    outline: none;
+}
+
+/*
+==============================================
+Removing tabs on keybord show
+==============================================
+*/
+.remove-tabs
+{
+    display: none;
+}
+
+@media screen and (max-height:580px)
+{
+    ion-footer
+    {
+        height: 15%!important;
+    }
+}
+/*
+==============================================
+Colors
+==============================================
+*/
+
+.ion-color-footer
+{
+  --ion-color-base:#fcfcfc;
+}
+
+.ion-color-chat-background
+{
+    --ion-color-base:#F0F0F0;
+}
+
+.vertical-align {
+  font-size: 3em;
+}
+
+.vertical-align--flexbox {
+  display: flex;
+  align-items: center;
+  
+  ion-title ion-icon {
+    margin: 10px;
+    padding: 10px;
+    transition: margin 300ms;
+  }
+  
+  &:hover {
+    ion-title ion-icon {
+      margin-left: 15px;
+    }
+  }
+}

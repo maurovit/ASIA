@@ -1,0 +1,44 @@
+<ion-header no-border>
+    <ion-toolbar color="chat-background">
+        <ion-title>
+            <div class="vertical-align vertical-align--flexbox">
+                <ion-icon src="assets/icon/svg/back.svg" (click)="goBack()"></ion-icon>
+                <span>{{USER_MAIL}}</span>
+            </div>
+        </ion-title>
+    </ion-toolbar>
+    <div id="separator"></div>
+</ion-header>
+
+<!-- CHATBOT -->
+<ion-content id="container" color="chat-background">
+    <div id="operator-chat" class="discussion">
+    </div>
+</ion-content>
+<!-- CHATBOX -->
+<ion-footer>
+    <ion-toolbar color="footer">
+        <ion-grid>
+            <ion-row>
+                <!-- TEXTUAL INPUT -->
+                <ion-col size="{{!this.vocalInput?10:12}}">
+                    <div [ngClass]="{'input-and-button-wrapper':true}">
+                        <ion-grid>
+                            <ion-row>
+                                <ion-col size="12" style="display: flex;">
+                                    <input id="chatbox" type="text" placeholder="Scrivi un messaggio..." [(ngModel)]="this.textMessage">
+                                </ion-col>
+                            </ion-row>
+                        </ion-grid>
+                    </div>
+                </ion-col>
+                <!-- SEND TEXT MESSAGE BUTTON -->
+                <ion-col size="2" *ngIf="!this.vocalInput"  style="padding: 0;">
+                    <button class="send-message-button animated bounceIn" (click)="sendMessage()">
+                        <img id="send-btn-img" src="assets/icon/svg/send_btn_arrow.svg">
+                    </button>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+    </ion-toolbar>
+</ion-footer>

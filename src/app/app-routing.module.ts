@@ -8,6 +8,8 @@ const routes: Routes = [
   { path: 'register', loadChildren: './register/register.module#RegisterPageModule' },
   { path: 'home', loadChildren: './home/home.module#HomePageModule' },
   { path: '', loadChildren: './tabs/tabs.module#TabsPageModule'},
+  { path: 'chat/:user_id', loadChildren: './community/chat/chat.module#ChatPageModule' },
+
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
