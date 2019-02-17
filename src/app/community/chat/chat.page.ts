@@ -55,6 +55,9 @@ export class ChatPage {
       };
       this.db.collection('/'+this.USER_MAIL)
                         .doc(this.OPERATOR_MAIL)
+                        .set({});
+      this.db.collection('/'+this.USER_MAIL)
+                        .doc(this.OPERATOR_MAIL)
                         .collection(this.MESSAGES_ID)
                         .add(outMessage)
                         .then(ref=>{console.log(ref)});
