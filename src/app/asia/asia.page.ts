@@ -38,8 +38,9 @@ export class AsiaPage implements OnInit
   //Le frasi che Asia usa per contattare periodicamente l'utente
   AsiaEntranceSentences : string[] = ['E un po che non ti sento, che mi racconti?',
    'Hey ti stavo pensando e cosi ti ho contattato, come va?', 'Ti va di fare due chiacchiere con me?'];
+  
   private buttonIcon:string = "volume-off";
-
+  private buttonColor:string = "light";
 
   private warningLevel: number;
 
@@ -119,9 +120,11 @@ export class AsiaPage implements OnInit
     if(this.buttonIcon == "volume-off"){
       this.buttonIcon = "volume-high";
       this.asiaSpeaks = true;
+      this.buttonColor ="success";
     }else{
       this.buttonIcon = "volume-off";
       this.asiaSpeaks = false;
+      this.buttonColor = "light";
     }
   }
 
