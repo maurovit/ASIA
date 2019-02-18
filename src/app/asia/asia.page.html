@@ -9,7 +9,10 @@
                 </ion-thumbnail>
             </ion-col>
             <ion-col size="3">
-                <ion-toggle id="speaks" mode="md" [(ngModel)]="asiaSpeaks"></ion-toggle>
+                <ion-button shape="round" style="margin-top:7%; padding-right:15%; margin-left:25%;" color="{{buttonColor}}" size="small" (click)="changeSpeakerSettings()">
+                        <ion-icon  style="font-size: 180%" slot="icon-only" name="volume-mute"></ion-icon>
+                </ion-button>
+                <!--<ion-toggle id="speaks" mode="md" [(ngModel)]="asiaSpeaks"></ion-toggle>-->
             </ion-col>
         </ion-row>
     </ion-grid>

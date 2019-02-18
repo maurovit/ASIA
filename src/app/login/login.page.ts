@@ -60,8 +60,19 @@ export class LoginPage implements OnInit {
 			if(err.code === "auth/user-not-found") {
 				console.log("User not found")
 			}
+		this.presentToast(JSON.stringify(err));
 		}
 	}
+
+	async presentToast(text) {
+    const toast = await this.toastCtrl.create({
+        message: text,
+        position: 'bottom',
+        duration: 3000
+    });
+    toast.present();
+  }
+
 
 	async forgotPass() {
 		const alert = await this.alertCtrl.create({
