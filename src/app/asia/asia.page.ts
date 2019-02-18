@@ -566,7 +566,6 @@ async uploadImageData(entry) {
       //Check del proprieterio dell'ultimo messaggio
       var firstReplyClass=this.lastMessageOwner==='asia'?"first":"last";
       msgContainer.setAttribute("class","bubble recipient "+firstReplyClass+" animated fadeIn");
-      msgContainer.setAttribute("_ngcontent-c1","");
       msgContainer.setAttribute("style","margin-right:5px;");
       msgContainer.setAttribute("id","focusable");
       msgContainer.innerText=text;
@@ -577,7 +576,6 @@ async uploadImageData(entry) {
     } else if(owner=='asia'){
       var firstReplyClass=this.lastMessageOwner==='user'?"first":"last";
       msgContainer.setAttribute("class","bubble sender "+firstReplyClass+" animated fadeIn");
-      msgContainer.setAttribute("_ngcontent-c1","");
       msgContainer.setAttribute("style","margin-left:5px;");  
       msgContainer.setAttribute("id","focusable");
       msgContainer.innerText=text;
@@ -593,7 +591,6 @@ async uploadImageData(entry) {
       lastMessage.removeAttribute("id");
     var firstReplyClass=this.lastMessageOwner==='asia'?"first":"last";
     msgContainer.setAttribute("class","bubble recipient "+firstReplyClass+" animated fadeIn");
-    msgContainer.setAttribute("_ngcontent-c1","");
     msgContainer.setAttribute("style","margin-left: 5px;padding: 0;overflow: hidden;");
     msgContainer.setAttribute("id","focusable");
     var img=document.createElement("img");
