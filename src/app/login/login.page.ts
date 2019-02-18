@@ -52,6 +52,9 @@ export class LoginPage implements OnInit {
 				})
 				this.storage.setItem("idUtente",res.user.uid);
 				this.storage.setItem("email",res.user.email);
+
+				//permesso per le notifiche solo se l'utente è loggato
+				this.storage.setItem("notificationPermission", true);
 				this.router.navigate(['/tabs'])
 			}
 		
