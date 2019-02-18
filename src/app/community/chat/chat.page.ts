@@ -30,6 +30,9 @@ export class ChatPage {
   OPERATOR_ID:string;
   MESSAGES_ID:string='messages';
 
+  LAST_MESSAGES_COLLECTION:string='/last_messages';
+  LAST_MESSAGES_DOCUMENT:string="last_sended";
+
   subscription;
 
   constructor(private db:AngularFirestore,private route:ActivatedRoute, private router:Router,private storage:NativeStorage){
@@ -38,13 +41,12 @@ export class ChatPage {
       this.USER_ID=data;
       this.OPERATOR_ID=this.route.snapshot.paramMap.get("operator_id");
       this.lastMessageOwner=this.OPERATOR_ID;
+      this.textMessage='';
+    
+      this.messagesMap=new Map<string,any>();
+      this.orderedMessages=[];
       this.listenMessage();
     })
-
-    this.textMessage='';
-    
-    this.messagesMap=new Map<string,any>();
-    this.orderedMessages=[];
   }
 
   sendMessage(){
@@ -79,8 +81,9 @@ export class ChatPage {
                           //Se è un messaggio non visto in precedenza, viene aggiunto
                           //alla mappa ed alla chat
                           if(!this.messagesMap.has(document_key)){
+                            //Aggiunta id messaggio alla mappa
                             this.messagesMap.set(document_key,msg.payload.doc.data());
-                            console.log(msg.payload.doc.data().text,msg.payload.doc.data().date.toDate())
+                            console.log("Nuovo messaggio",msg.payload.doc.data().text,msg.payload.doc.data().date.toDate())
                             let newMessage:Message;
                             newMessage={
                               id:document_key,
@@ -96,6 +99,15 @@ export class ChatPage {
                             section_chat.appendChild(msgBubble);
                             window.location.hash='#focusable';
                             this.lastMessageOwner=newMessage.owner;
+
+                            //Segnalazione lettura messaggio
+                            if(newMessage.owner==this.OPERATOR_ID){
+                              this.db.collection(this.LAST_MESSAGES_COLLECTION)
+                                                .doc(this.USER_ID)
+                                                .collection(this.OPERATOR_ID)
+                                                .doc(this.LAST_MESSAGES_DOCUMENT)
+                                                .update({isRead:true});
+                            }
                           }
                         }
                       });
