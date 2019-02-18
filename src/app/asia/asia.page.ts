@@ -100,12 +100,10 @@ export class AsiaPage implements OnInit
 
       this.platform.resume.subscribe(()=>{
         this.localNotifications.cancel(this.localNotifications.getIds);
-        this.presentToast("local notification cancellata");
       });
 
       this.localNotifications.on('click').subscribe(()=>{
         this.localNotifications.cancel(this.localNotifications.getIds);
-        this.presentToast("local notification cancellata");
       })
 
   }
