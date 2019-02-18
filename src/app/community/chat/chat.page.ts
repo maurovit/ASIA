@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
+import { ViewEncapsulation } from '@angular/core'
 
 interface Message
 {
@@ -15,6 +16,7 @@ interface Message
   selector: 'app-chat',
   templateUrl: './chat.page.html',
   styleUrls: ['./chat.page.scss'],
+  encapsulation:ViewEncapsulation.None
 })
 export class ChatPage {
   textMessage:string;
@@ -147,15 +149,13 @@ export class ChatPage {
     if(owner==this.OPERATOR_MAIL){
       //Check del proprieterio dell'ultimo messaggio
       var firstReplyClass=this.lastMessageOwner===this.USER_MAIL?"first":"last";
-      msgContainer.setAttribute("class","bubble recipient "+firstReplyClass+" animated fadeIn");
-      msgContainer.setAttribute("_ngcontent-c4","");
+      msgContainer.setAttribute("class","bubble recipient "+firstReplyClass+" animated fadeIn"); 
       msgContainer.setAttribute("style","margin-right:5px;");
       msgContainer.setAttribute("id","focusable");
       msgContainer.innerText=text;
     } else if(owner==this.USER_MAIL){
       var firstReplyClass=this.lastMessageOwner===this.OPERATOR_MAIL?"first":"last";
       msgContainer.setAttribute("class","bubble sender "+firstReplyClass+" animated fadeIn");
-      msgContainer.setAttribute("_ngcontent-c4","");
       msgContainer.setAttribute("style","margin-left:5px;");  
       msgContainer.setAttribute("id","focusable");
       msgContainer.innerText=text;
