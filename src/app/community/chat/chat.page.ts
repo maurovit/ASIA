@@ -29,6 +29,8 @@ export class ChatPage {
   OPERATOR_MAIL:string;
   USER_MAIL:string;
   MESSAGES_ID:string='messages';
+  LAST_MESSAGES_COLLECTION:string='/last_messages';
+  LAST_MESSAGES_DOCUMENT:string="last_sended";
 
   subscription;
 
@@ -55,6 +57,8 @@ export class ChatPage {
         date:new Date(),
         text:this.textMessage
       };
+
+      //Invio del messaggio su firebase
       this.db.collection('/'+this.USER_MAIL)
                         .doc(this.OPERATOR_MAIL)
                         .set({});
@@ -64,6 +68,15 @@ export class ChatPage {
                         .add(outMessage)
                         .then(ref=>{console.log(ref)});
       this.textMessage='';
+      //Invio notifica nuovo messaggio
+      this.db.collection(this.LAST_MESSAGES_COLLECTION)
+                        .doc(this.USER_MAIL)
+                        .set({});
+      this.db.collection(this.LAST_MESSAGES_COLLECTION)
+                        .doc(this.USER_MAIL)
+                        .collection(this.OPERATOR_MAIL)
+                        .doc(this.LAST_MESSAGES_DOCUMENT)
+                        .set({date:new Date(),isRead:false});
     }
   }
 
