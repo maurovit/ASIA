@@ -16,7 +16,7 @@ import{HTTP} from'@ionic-native/http/ngx';
 })
 export class LoginPage implements OnInit {
 	private urlBase:string = "http://192.168.1.79:8080/AsiaUtils/images/";
-	serverUrl:string='http://192.168.1.79:8080/AsiaUtils/inizializzaOperatore'
+	serverUrl:string='http://ec2-3-87-190-68.compute-1.amazonaws.com:8080/AsiaUtils/inizializzaOperatore'
   email: string = ""
   password: string = ""
   constructor(
@@ -42,24 +42,26 @@ export class LoginPage implements OnInit {
   ngOnInit() {
 		
 	}
+
+
+	async serverRequest(){
+		this.http.post(this.serverUrl,{'email':this.email},{}).then(data => {
+			var firstSplit = data.data.split("|");
+			var name = firstSplit[0];
+			var description = firstSplit[1];
+			var url = firstSplit[2];
+		
+			this.storage.setItem("descrizione",description);
+			this.storage.setItem("nominativo",name);
+		
+		}).catch(error => {
+
+		})
+	}
 	
 	completeLogin(){
-		this.login().then(()=>{
-			this.http.post(this.serverUrl,{'email':this.email},{}).then(data => {
-				var firstSplit = data.data.split("|");
-				var name = firstSplit[0];
-				var description = firstSplit[1];
-				var url = firstSplit[2];
-			
-				this.storage.setItem("descrizione",description);
-				this.storage.setItem("nominativo",name);
-				if(url!=null && url!=undefined && url!=''){
-					this.storage.setItem('url',this.urlBase+url);
-				}
-			}).catch(error => {
-
-			})
-		})
+		this.login();
+		this.serverRequest();
 	}
 
   async login() {
