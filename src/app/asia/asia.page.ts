@@ -100,7 +100,13 @@ export class AsiaPage implements OnInit
 
       this.platform.resume.subscribe(()=>{
         this.localNotifications.cancel(this.localNotifications.getIds);
+        this.presentToast("local notification cancellata");
       });
+
+      this.localNotifications.on('click').subscribe(()=>{
+        this.localNotifications.cancel(this.localNotifications.getIds);
+        this.presentToast("local notification cancellata");
+      })
 
   }
 
@@ -304,7 +310,7 @@ async uploadImageData(entry) {
        commandMessage = alteredMessage[1].split('</slower>')[0];
        postCommandMessage = alteredMessage[1].split('</slower>')[1];
 
-       if(this.asiaSpeaks)
+       if(this.asiaSpeaks){
           this.speaker.speak({
             text: preCommandMessage,
             locale: 'it-IT',
@@ -317,7 +323,8 @@ async uploadImageData(entry) {
             text: postCommandMessage,
             locale: 'it-IT',
             rate: 1
-          }))     
+          }))
+        }
        return true;
     }else if(message.includes('<eng>') && message.includes('</eng>')){
       //convenzione: il secretCommand si riferisce alla string che segue il secret command
@@ -326,7 +333,7 @@ async uploadImageData(entry) {
       commandMessage = alteredMessage[1].split('</eng>')[0];
       postCommandMessage = alteredMessage[1].split('</eng>')[1];
 
-      if(this.asiaSpeaks)
+      if(this.asiaSpeaks){
         this.speaker.speak({
           text: preCommandMessage,
           locale: 'it-IT',
@@ -339,7 +346,8 @@ async uploadImageData(entry) {
           text: postCommandMessage,
           locale: 'it-IT',
           rate: 1
-          }))     
+          }))
+        }   
       return true;
     }else if(message.includes('<critical>') && message.includes('</critical>')){
       //convenzione: il secretCommand si riferisce alla string che segue il secret command
@@ -352,7 +360,13 @@ async uploadImageData(entry) {
           text: preCommandMessage,
           locale: 'it-IT',
           rate: 1
-          })}
+          }).then(()=>{
+            this.speaker.speak({
+              text: preCommandMessage,
+              locale: 'it-IT',
+              rate: 1
+          })})
+        }
       this.warningLevel = 0;
       this.presentToast("Livello critico");
       //AZZERA WRNING LEVEL E CONTATTA OPERATORE
@@ -504,7 +518,7 @@ async uploadImageData(entry) {
         
         if(value < 0.4){
           this.warningLevel++;
-          this.presentToast("Debug: warning level aumentato");
+          this.presentToast("DEMO: warning level aumentato");
         }
         if(this.warningLevel == 8){
           this.db.collection(this.NOTIFICATIONS_ID)
