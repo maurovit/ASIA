@@ -335,22 +335,19 @@ async uploadImageData(entry) {
       preCommandMessage = alteredMessage[0];
       commandMessage = alteredMessage[1].split('</critical>')[0];
       postCommandMessage = alteredMessage[1].split('</critical>')[1];
-      if(this.asiaSpeaks)
+      if(this.asiaSpeaks){
         this.speaker.speak({
           text: preCommandMessage,
           locale: 'it-IT',
           rate: 1
-          }).then(() => {
-            this.warningLevel = 0;
-            //AZZERA WRNING LEVEL E CONTATTA OPERATORE
-            this.db.collection(this.NOTIFICATIONS_ID)
+          })}
+      this.warningLevel = 0;
+      this.presentToast("Livello critico");
+      //AZZERA WRNING LEVEL E CONTATTA OPERATORE
+      this.db.collection(this.NOTIFICATIONS_ID)
                               .doc(this.USER_MAIL)
                               .set({});
-          }).then(()=>this.speaker.speak({
-          text: postCommandMessage,
-          locale: 'it-IT',
-          rate: 1
-          }))     
+     
       return true;
     }else
       return false;
