@@ -105,7 +105,7 @@ export class AsiaPage implements OnInit
   }
 
   changeSpeakerSettings(){
-    if(this.buttonIcon == "volume-mute"){
+    if(this.buttonIcon == "volume-off"){
       this.buttonIcon = "volume-high";
       this.asiaSpeaks = true;
     }else{
