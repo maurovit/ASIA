@@ -10,6 +10,9 @@ import {Camera , CameraOptions, PictureSourceType} from '@ionic-native/Camera/ng
 import {FileTransfer, FileTransferObject, FileUploadOptions} from '@ionic-native/file-transfer/ngx';
 import {File} from '@ionic-native/file/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import {AsiaPage} from '../asia/asia.page';
+ 
 
 @Component({
   selector: 'app-profile',
@@ -31,7 +34,7 @@ export class ProfilePage {
      public navCtrl: NavController, private storage : NativeStorage,
      private http:HTTP, private toastController: ToastController,
      private cameraProfile:Camera, private fTProfile:FileTransfer, private fileProfile:File,
-     private webviewProfile:WebView, private file:File) {
+     private webviewProfile:WebView, private file:File, private localNotifications:LocalNotifications) {
        
       this.storage.getItem('email')
           .then(data => {
