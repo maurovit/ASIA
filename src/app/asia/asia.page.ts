@@ -367,7 +367,7 @@ async uploadImageData(entry) {
           rate: 1
           }).then(()=>{
             this.speaker.speak({
-              text: preCommandMessage,
+              text: postCommandMessage,
               locale: 'it-IT',
               rate: 1
           })})
