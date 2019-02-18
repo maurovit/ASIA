@@ -86,9 +86,7 @@ export class ProfilePage {
           var url = firstSplit[2];
           this.storage.setItem("descrizione",description);
           this.storage.setItem("nominativo",name);
-          if(url!=null && url!=undefined && url!=''){
-            this.storage.setItem("url",this.urlBase+url);
-          }
+          
       })
         .catch(error => {
           this.presentToast("Errore di rete");
@@ -117,7 +115,7 @@ export class ProfilePage {
     this.cameraProfile.getPicture(options).then((imageData) => {
             var currentName = imageData.substr(imageData.lastIndexOf('/') + 1);
             var correctPath = imageData.substr(0, imageData.lastIndexOf('/') + 1);
-            this.copyFileToLocalDir(correctPath, currentName, this.createFileName());      
+            //this.copyFileToLocalDir(correctPath, currentName, this.createFileName());      
 
             this.file.readAsDataURL(correctPath,currentName).then(
               file64 => {
